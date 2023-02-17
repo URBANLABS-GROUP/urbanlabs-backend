@@ -1,7 +1,6 @@
 package org.example.domain.document.parser;
 
 import org.example.model.telemetry.impl.DocumentTelemetry;
-import org.example.model.telemetry.impl.IotTelemetry;
 
 import java.util.List;
 

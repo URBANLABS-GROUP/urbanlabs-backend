@@ -8,7 +8,7 @@ import java.util.List;
 public class MockPowerSocketDataParser extends BaseIotDataParser {
 
     @Override
-    public List<IotTelemetry> parseDate(byte[] data) {
+    public List<IotTelemetry> parseDate(final byte[] data) {
         return null;
     }
 }

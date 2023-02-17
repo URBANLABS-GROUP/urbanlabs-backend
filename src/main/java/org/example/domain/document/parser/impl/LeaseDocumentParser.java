@@ -8,7 +8,7 @@ import java.util.List;
 public class LeaseDocumentParser extends BaseDocumentParser {
 
     @Override
-    public List<DocumentTelemetry> parseDate(byte[] data) {
+    public List<DocumentTelemetry> parseDate(final byte[] data) {
         return null;
     }
 }
