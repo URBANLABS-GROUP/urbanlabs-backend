@@ -1,11 +1,23 @@
 package org.example.dto;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class AnalyticDto {
 
+    private Date date;
     private Integer roomCount;
     private Integer rentCount;
+    private Integer expectedIncome;
+    private Integer realIncome;
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public Integer getRoomCount() {
         return roomCount;
@@ -23,24 +35,43 @@ public class AnalyticDto {
         this.rentCount = rentCount;
     }
 
+    public Integer getExpectedIncome() {
+        return expectedIncome;
+    }
+
+    public void setExpectedIncome(Integer expectedIncome) {
+        this.expectedIncome = expectedIncome;
+    }
+
+    public Integer getRealIncome() {
+        return realIncome;
+    }
+
+    public void setRealIncome(Integer realIncome) {
+        this.realIncome = realIncome;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AnalyticDto that = (AnalyticDto) o;
-        return Objects.equals(roomCount, that.roomCount) && Objects.equals(rentCount, that.rentCount);
+        return Objects.equals(date, that.date) && Objects.equals(roomCount, that.roomCount) && Objects.equals(rentCount, that.rentCount) && Objects.equals(expectedIncome, that.expectedIncome) && Objects.equals(realIncome, that.realIncome);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(roomCount, rentCount);
+        return Objects.hash(date, roomCount, rentCount, expectedIncome, realIncome);
     }
 
     @Override
     public String toString() {
         return "AnalyticDto{" +
-                "roomCount=" + roomCount +
+                "date=" + date +
+                ", roomCount=" + roomCount +
                 ", rentCount=" + rentCount +
+                ", expectedIncome=" + expectedIncome +
+                ", realIncome=" + realIncome +
                 '}';
     }
 }

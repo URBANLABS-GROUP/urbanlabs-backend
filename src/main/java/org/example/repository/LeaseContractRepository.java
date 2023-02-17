@@ -10,5 +10,5 @@ public interface LeaseContractRepository extends JpaRepository<LeaseContract, In
 
     List<LeaseContract> findAllByStartTimeGreaterThanEqualAndEndTimeLessThanEqual(Instant from, Instant to);
     List<LeaseContract> findAllByLessorIdAndStartTimeGreaterThanEqualAndEndTimeLessThanEqual(Integer lessorId, Instant from, Instant to);
-    List<LeaseContract> findAllByRoomIdInAndStartTimeGreaterThanEqualAndEndTimeLessThanEqual(final List<Integer> roomIds, Instant from, Instant to);
+    List<LeaseContract> findAllByRoomIdInAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(final List<Integer> roomIds, Instant from, Instant to);
 }

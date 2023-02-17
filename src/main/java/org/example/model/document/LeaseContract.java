@@ -1,9 +1,6 @@
 package org.example.model.document;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
@@ -13,22 +10,25 @@ public class LeaseContract {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
+    @Column(nullable = false)
     private Integer lessorId;
+    @Column(nullable = false)
     private Integer lesseeId;
+    @Column(nullable = false)
     private Integer roomId;
 
     private Instant createTime;
     private Instant startTime;
     private Instant endTime;
 
-    private BigDecimal rent;
+    private Integer rent;
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -80,11 +80,11 @@ public class LeaseContract {
         this.endTime = endTime;
     }
 
-    public BigDecimal getRent() {
+    public Integer getRent() {
         return rent;
     }
 
-    public void setRent(BigDecimal rent) {
+    public void setRent(Integer rent) {
         this.rent = rent;
     }
 
