@@ -12,7 +12,7 @@ public class BusinessCenterStorey {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int businessCenterId;
-    private byte[] map;
+    private String map;
     private String name;
 
     @OneToMany(mappedBy = "businessCenterStoreyId")
@@ -34,11 +34,11 @@ public class BusinessCenterStorey {
         this.businessCenterId = businessCenterId;
     }
 
-    public byte[] getMap() {
+    public String getMap() {
         return map;
     }
 
-    public void setMap(byte[] map) {
+    public void setMap(String map) {
         this.map = map;
     }
 
@@ -63,24 +63,22 @@ public class BusinessCenterStorey {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BusinessCenterStorey that = (BusinessCenterStorey) o;
-        return id == that.id && businessCenterId == that.businessCenterId && Arrays.equals(map, that.map) && Objects.equals(name, that.name) && Objects.equals(rooms, that.rooms);
+        return id == that.id && businessCenterId == that.businessCenterId && Objects.equals(map, that.map) && Objects.equals(name, that.name) && Objects.equals(rooms, that.rooms);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, businessCenterId, name, rooms);
-        result = 31 * result + Arrays.hashCode(map);
-        return result;
+        return Objects.hash(id, businessCenterId, map, name, rooms);
     }
 
     @Override
     public String toString() {
         return "BusinessCenterStorey{" +
-                "id=" + id +
-                ", businessCenterId=" + businessCenterId +
-                ", map=" + Arrays.toString(map) +
-                ", name='" + name + '\'' +
-                ", roomIds=" + rooms +
-                '}';
+            "id=" + id +
+            ", businessCenterId=" + businessCenterId +
+            ", map='" + map + '\'' +
+            ", name='" + name + '\'' +
+            ", rooms=" + rooms +
+            '}';
     }
 }

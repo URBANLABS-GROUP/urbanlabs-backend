@@ -10,6 +10,7 @@ public class AnalyticDto {
     private Integer rentCount;
     private Integer expectedIncome;
     private Integer realIncome;
+    private Integer requestExpenses;
 
     public Date getDate() {
         return date;
@@ -51,27 +52,36 @@ public class AnalyticDto {
         this.realIncome = realIncome;
     }
 
+    public Integer getRequestExpenses() {
+        return requestExpenses;
+    }
+
+    public void setRequestExpenses(Integer requestExpenses) {
+        this.requestExpenses = requestExpenses;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AnalyticDto that = (AnalyticDto) o;
-        return Objects.equals(date, that.date) && Objects.equals(roomCount, that.roomCount) && Objects.equals(rentCount, that.rentCount) && Objects.equals(expectedIncome, that.expectedIncome) && Objects.equals(realIncome, that.realIncome);
+        return Objects.equals(date, that.date) && Objects.equals(roomCount, that.roomCount) && Objects.equals(rentCount, that.rentCount) && Objects.equals(expectedIncome, that.expectedIncome) && Objects.equals(realIncome, that.realIncome) && Objects.equals(requestExpenses, that.requestExpenses);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(date, roomCount, rentCount, expectedIncome, realIncome);
+        return Objects.hash(date, roomCount, rentCount, expectedIncome, realIncome, requestExpenses);
     }
 
     @Override
     public String toString() {
         return "AnalyticDto{" +
-                "date=" + date +
-                ", roomCount=" + roomCount +
-                ", rentCount=" + rentCount +
-                ", expectedIncome=" + expectedIncome +
-                ", realIncome=" + realIncome +
-                '}';
+            "date=" + date +
+            ", roomCount=" + roomCount +
+            ", rentCount=" + rentCount +
+            ", expectedIncome=" + expectedIncome +
+            ", realIncome=" + realIncome +
+            ", requestExpenses=" + requestExpenses +
+            '}';
     }
 }

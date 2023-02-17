@@ -1,6 +1,7 @@
 package org.example.model.request;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Objects;
 
 @Entity(name = "request")
@@ -17,6 +18,7 @@ public class Request {
     private String title; // Название заявки
     private String customer; // Заказчик заявки
     private Integer cost; // Стоимость после выполнения
+    private Instant createTime;
 
     public Integer getId() {
         return id;
@@ -74,26 +76,38 @@ public class Request {
         this.cost = cost;
     }
 
+    public Instant getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Instant createTime) {
+        this.createTime = createTime;
+    }
+
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final Request that = (Request) o;
-        return Objects.equals(id, that.id)
-            && type == that.type
-            && status == that.status
-            && Objects.equals(roomId, that.roomId)
-            && Objects.equals(title, that.title)
-            && Objects.equals(customer, that.customer)
-            && Objects.equals(cost, that.cost);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Request request = (Request) o;
+        return Objects.equals(id, request.id) && type == request.type && status == request.status && Objects.equals(roomId, request.roomId) && Objects.equals(title, request.title) && Objects.equals(customer, request.customer) && Objects.equals(cost, request.cost) && Objects.equals(createTime, request.createTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type, status, roomId, title, customer, cost);
+        return Objects.hash(id, type, status, roomId, title, customer, cost, createTime);
+    }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+            "id=" + id +
+            ", type=" + type +
+            ", status=" + status +
+            ", roomId=" + roomId +
+            ", title='" + title + '\'' +
+            ", customer='" + customer + '\'' +
+            ", cost=" + cost +
+            ", createTime=" + createTime +
+            '}';
     }
 }

@@ -14,7 +14,7 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private int businessCenterStoreyId;
-    private byte[] position;
+    private String position;
     private String name;
     private Integer leaseContractId;
 
@@ -34,11 +34,11 @@ public class Room {
         this.businessCenterStoreyId = businessCenterStoreyId;
     }
 
-    public byte[] getPosition() {
+    public String getPosition() {
         return position;
     }
 
-    public void setPosition(byte[] position) {
+    public void setPosition(String position) {
         this.position = position;
     }
 
@@ -63,24 +63,22 @@ public class Room {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Room room = (Room) o;
-        return id == room.id && businessCenterStoreyId == room.businessCenterStoreyId && Arrays.equals(position, room.position) && Objects.equals(name, room.name) && Objects.equals(leaseContractId, room.leaseContractId);
+        return businessCenterStoreyId == room.businessCenterStoreyId && Objects.equals(id, room.id) && Objects.equals(position, room.position) && Objects.equals(name, room.name) && Objects.equals(leaseContractId, room.leaseContractId);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, businessCenterStoreyId, name, leaseContractId);
-        result = 31 * result + Arrays.hashCode(position);
-        return result;
+        return Objects.hash(id, businessCenterStoreyId, position, name, leaseContractId);
     }
 
     @Override
     public String toString() {
         return "Room{" +
-                "id=" + id +
-                ", businessCenterStoreyId=" + businessCenterStoreyId +
-                ", position=" + Arrays.toString(position) +
-                ", name='" + name + '\'' +
-                ", leaseContractId=" + leaseContractId +
-                '}';
+            "id=" + id +
+            ", businessCenterStoreyId=" + businessCenterStoreyId +
+            ", position='" + position + '\'' +
+            ", name='" + name + '\'' +
+            ", leaseContractId=" + leaseContractId +
+            '}';
     }
 }

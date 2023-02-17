@@ -1,6 +1,7 @@
 package org.example.util;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class Interval {
@@ -48,6 +49,10 @@ public class Interval {
 
     public static Interval of(final Instant from, final Instant to) {
         return new Interval(from, to);
+    }
+
+    public long calcDuration() {
+        return from.until(to, ChronoUnit.SECONDS);
     }
 
     @Override
