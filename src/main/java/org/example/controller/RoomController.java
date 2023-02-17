@@ -37,8 +37,8 @@ public class RoomController {
             @PathVariable("id") final int id,
             @RequestBody @NotNull @Validated final Room entity) {
 
-        Optional<Room> businessCenter = roomRepository.findById(id);
-        if (businessCenter.isEmpty()) {
+        Optional<Room> room = roomRepository.findById(id);
+        if (room.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(roomRepository.save(entity));
@@ -46,8 +46,8 @@ public class RoomController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> delete(@PathVariable("id") final int id) {
-        Optional<Room> businessCenter = roomRepository.findById(id);
-        if (businessCenter.isEmpty()) {
+        Optional<Room> room = roomRepository.findById(id);
+        if (room.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
