@@ -10,7 +10,7 @@ spring:
     driverClassName: org.postgresql.Driver
     type: com.zaxxer.hikari.HikariDataSource
   jpa:
-    hibernate.ddl-auto: update
+    hibernate.ddl-auto: create-drop
     generate-ddl: false
     show-sql: false
     properties:
