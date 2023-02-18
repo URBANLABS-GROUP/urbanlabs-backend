@@ -237,6 +237,10 @@ public class AnalyticsService {
     }
 
     private Integer calcPowerExpensive(final BusinessCenter businessCenter, final List<Integer> roomIds, final Instant from, final Instant to) {
+        if (businessCenter.getVattPrice() == null) {
+            return null;
+        }
+
         return calcPowerConsumption(roomIds, from, to) * businessCenter.getVattPrice();
     }
 

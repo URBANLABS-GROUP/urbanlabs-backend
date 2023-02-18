@@ -252,7 +252,7 @@ public class TestDataController {
 
         requests = requestRepository.saveAll(requests);
 
-        final Instant from = Instant.parse("2023-01-01T00:00:00Z");
+        final Instant from = Instant.parse("2022-01-01T00:00:00Z");
         final Instant to = Instant.now();
 
         final List<PowerSocket> powerSockets = new ArrayList<>();
@@ -334,7 +334,7 @@ public class TestDataController {
         final List<PowerSocketTelemetry> powerSocketTelemetries = new ArrayList<>();
 
         for (final PowerSocket powerSocket : powerSockets) {
-            for (long i = from.getEpochSecond(); i < to.getEpochSecond(); i += 3600) {
+            for (long i = from.getEpochSecond(); i < to.getEpochSecond(); i += 600) {
                 powerSocketTelemetries.add(buildPowerSocketTelemetry(powerSocket,
                     Instant.ofEpochSecond(i),
                     powerSocket.getRoomId() == 10
