@@ -17,6 +17,7 @@ public class Room {
     private Integer leaseContractId;
     private Integer requiredTemp;
     private Integer allowablePowerConsumption;
+    private Double area;
 
     public Integer getId() {
         return id;
@@ -74,17 +75,25 @@ public class Room {
         this.allowablePowerConsumption = powerConsumption;
     }
 
+    public Double getArea() {
+        return area;
+    }
+
+    public void setArea(Double area) {
+        this.area = area;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Room room = (Room) o;
-        return businessCenterStoreyId == room.businessCenterStoreyId && Objects.equals(id, room.id) && Objects.equals(position, room.position) && Objects.equals(name, room.name) && Objects.equals(leaseContractId, room.leaseContractId) && Objects.equals(requiredTemp, room.requiredTemp) && Objects.equals(allowablePowerConsumption, room.allowablePowerConsumption);
+        return businessCenterStoreyId == room.businessCenterStoreyId && Objects.equals(id, room.id) && Objects.equals(position, room.position) && Objects.equals(name, room.name) && Objects.equals(leaseContractId, room.leaseContractId) && Objects.equals(requiredTemp, room.requiredTemp) && Objects.equals(allowablePowerConsumption, room.allowablePowerConsumption) && Objects.equals(area, room.area);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, businessCenterStoreyId, position, name, leaseContractId, requiredTemp, allowablePowerConsumption);
+        return Objects.hash(id, businessCenterStoreyId, position, name, leaseContractId, requiredTemp, allowablePowerConsumption, area);
     }
 
     @Override
@@ -96,7 +105,8 @@ public class Room {
             ", name='" + name + '\'' +
             ", leaseContractId=" + leaseContractId +
             ", requiredTemp=" + requiredTemp +
-            ", powerConsumption=" + allowablePowerConsumption +
+            ", allowablePowerConsumption=" + allowablePowerConsumption +
+            ", area=" + area +
             '}';
     }
 }

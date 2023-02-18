@@ -15,8 +15,9 @@ spring:
     show-sql: false
     properties:
       hibernate:
+        order_inserts: true
         jdbc:
-          batch_size: 50
+          batch_size: 500000
         dialect: org.hibernate.dialect.PostgreSQLDialect
   mvc:
     pathmatch:

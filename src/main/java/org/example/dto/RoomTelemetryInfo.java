@@ -14,7 +14,7 @@ public class RoomTelemetryInfo {
     private Integer averageWaterConsumption;
 
     private Boolean isMove;
-//    private boolean isLightTurnOn;
+    //    private boolean isLightTurnOn;
     private Integer rent;
     private Integer expenses;
 
@@ -64,6 +64,10 @@ public class RoomTelemetryInfo {
 
     public void setAverageWaterConsumption(Integer averageWaterConsumption) {
         this.averageWaterConsumption = averageWaterConsumption;
+    }
+
+    public RoomTelemetryInfo accumulate(RoomTelemetryInfo roomTelemetryInfo) {
+        return roomTelemetryInfo;
     }
 
     public Boolean getMove() {

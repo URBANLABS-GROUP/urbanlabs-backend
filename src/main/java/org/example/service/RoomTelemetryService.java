@@ -126,12 +126,16 @@ public class RoomTelemetryService {
         int low = 0;
         int high = 13;
         int result = r.nextInt(high - low) + low;
-        roomTelemetryInfo.setCurTemp(roomTelemetryInfo.getCurTemp() + result);
-
-        int result1 = r.nextInt(50 - 10) + 10;
-        roomTelemetryInfo.setCurDayPowerConsumption(roomTelemetryInfo.getCurDayPowerConsumption() + result1);
-
-        int result2 = r.nextInt(60 - 5) + 5;
-        roomTelemetryInfo.setCurDayWaterConsumption(roomTelemetryInfo.getCurDayWaterConsumption() + result2);
+        if (roomTelemetryInfo.getCurTemp() != null) {
+            roomTelemetryInfo.setCurTemp(roomTelemetryInfo.getCurTemp() + result);
+        }
+        if (roomTelemetryInfo.getCurDayPowerConsumption() != null) {
+            int result1 = r.nextInt(50 - 10) + 10;
+            roomTelemetryInfo.setCurDayPowerConsumption(roomTelemetryInfo.getCurDayPowerConsumption() + result1);
+        }
+        if (roomTelemetryInfo.getCurDayWaterConsumption() != null) {
+            int result2 = r.nextInt(60 - 5) + 5;
+            roomTelemetryInfo.setCurDayWaterConsumption(roomTelemetryInfo.getCurDayWaterConsumption() + result2);
+        }
     }
 }

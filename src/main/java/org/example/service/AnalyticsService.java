@@ -129,7 +129,7 @@ public class AnalyticsService {
     }
 
     public int buildTotalExpenses(BusinessCenter businessCenter, Room room, Instant from, Instant to) {
-        final Integer powerExpenses = calcPowerExpensive(businessCenter, Collections.singletonList(room.getId()), from, to);
+        final Integer powerExpenses = Optional.ofNullable(calcPowerExpensive(businessCenter, Collections.singletonList(room.getId()), from, to)).orElse(0);
         final Integer requestExpenses = calcRequestExpenses(Collections.singletonList(room.getId()), from, to);
         final Integer checkExpenses = calcCheckExpenses(Collections.singletonList(room.getId()), from, to);
 

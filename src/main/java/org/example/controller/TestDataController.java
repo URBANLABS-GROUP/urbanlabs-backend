@@ -189,9 +189,11 @@ public class TestDataController {
         final List<Room> officeRooms = new ArrayList<>();
         Room first = buildRoom(businessCenter2Storey1Floor);
         first.setPosition("{\"coords\":[[365,0],[365,190],[663,190],[663,0]]}");
+        first.setArea(40.5);
         officeRooms.add(first);
         Room second = buildRoom(businessCenter2Storey1Floor);
         second.setPosition("{\"coords\":[[65,0],[65,190],[365,190],[365,0]]}");
+        second.setArea(54.2);
         officeRooms.add(second);
         officeRooms.add(buildRoom(businessCenter2Storey2Floor));
         officeRooms.add(buildRoom(businessCenter2Storey2Floor));
@@ -252,7 +254,7 @@ public class TestDataController {
 
         requests = requestRepository.saveAll(requests);
 
-        final Instant from = Instant.parse("2022-01-01T00:00:00Z");
+        final Instant from = Instant.parse("2022-06-01T00:00:00Z");
         final Instant to = Instant.now();
 
         final List<PowerSocket> powerSockets = new ArrayList<>();
@@ -334,7 +336,7 @@ public class TestDataController {
         final List<PowerSocketTelemetry> powerSocketTelemetries = new ArrayList<>();
 
         for (final PowerSocket powerSocket : powerSockets) {
-            for (long i = from.getEpochSecond(); i < to.getEpochSecond(); i += 600) {
+            for (long i = from.getEpochSecond(); i < to.getEpochSecond(); i += 3600) {
                 powerSocketTelemetries.add(buildPowerSocketTelemetry(powerSocket,
                     Instant.ofEpochSecond(i),
                     powerSocket.getRoomId() == 10
@@ -502,7 +504,7 @@ public class TestDataController {
         powerSocketTelemetry.setEquipmentType(EquipmentType.POWER_SOCKET);
         powerSocketTelemetry.setFixTime(time);
 
-        powerSocketTelemetry.setVatt((int) (time.getEpochSecond() / 3600));
+        powerSocketTelemetry.setVatt((int) (time.getEpochSecond() * 2 / 3600));
         if (max) {
             powerSocketTelemetry.setVatt((int) (powerSocketTelemetry.getVatt() * 1.4));
         }
@@ -556,6 +558,7 @@ public class TestDataController {
         room.setBusinessCenterStoreyId(businessCenterStorey.getId());
         room.setRequiredTemp(270);
         room.setAllowablePowerConsumption(1000);
+        room.setArea(40.0);
         return room;
     }
 

@@ -87,29 +87,31 @@ public class PlotService {
 
         List<Plot<Integer>> plots = new ArrayList<>();
         for (final Room room : rooms) {
-            List<PowerSocket> allByRoomIdIn = daoFactory.getPowerSocketRepository().findAllByRoomIdIn(Collections.singletonList(room.getId()));
+            final List<Interval> intervals = DateTimeUtils.splitByDays(Interval.of(from, to), ZoneId.of("UTC"));
+            final List<PowerSocket> allByRoomIdIn = daoFactory.getPowerSocketRepository().findAllByRoomIdIn(Collections.singletonList(room.getId()));
 
-            for (PowerSocket powerSocket : allByRoomIdIn) {
-                final List<PowerSocketTelemetry> telemetries = daoFactory.getPowerSocketTelemetryRepository()
-                    .findAllByEquipmentTypeEqualsAndEquipmentIdInAndFixTimeGreaterThanEqualAndFixTimeLessThanEqualOrderByFixTimeAsc
-                        (EquipmentType.POWER_SOCKET, Collections.singletonList(powerSocket.getId()), from, to);
+            for (final PowerSocket powerSocket : allByRoomIdIn) {
+                final List<Plot.Point<Integer>> points = new ArrayList<>();
+                for (final Interval interval : intervals) {
+                    final List<PowerSocketTelemetry> telemetries = daoFactory.getPowerSocketTelemetryRepository()
+                        .findAllByEquipmentTypeEqualsAndEquipmentIdInAndFixTimeGreaterThanEqualAndFixTimeLessThanEqualOrderByFixTimeAsc
+                            (EquipmentType.POWER_SOCKET, Collections.singletonList(powerSocket.getId()), interval.getFrom(), interval.getTo());
 
-                if (telemetries.isEmpty()) {
-                    continue;
+                    if (telemetries.isEmpty()) {
+                        continue;
+                    }
+
+                    int vatt = telemetries.get(telemetries.size() - 1).getVatt() - telemetries.get(0).getVatt();
+
+                    points.add(Plot.Point.of(interval.getFrom(), vatt));
                 }
 
-                List<Plot.Point<Integer>> points = telemetries.stream()
-                    .map(t -> Plot.Point.of(t.getFixTime(), t.getVatt()))
-                    .collect(Collectors.toList());
-
-                Plot<Integer> plot = new Plot<>();
+                final Plot<Integer> plot = new Plot<>();
                 plot.setName(room.getName());
                 plot.setPoints(points);
                 plots.add(plot);
             }
-
         }
-
         return plots;
     }
 }
