@@ -22,7 +22,7 @@ $ docker run \
     --name postgres \
     -e "POSTGRES_PASSWORD=postgres" \
     -p 5432:5432 \
-    -d postgres:13
+    -d timescale/timescaledb-postgis:2.3.0-pg12
 
 $ docker run \
     --name pgadmin4 \

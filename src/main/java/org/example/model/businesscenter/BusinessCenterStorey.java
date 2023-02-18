@@ -13,6 +13,7 @@ public class BusinessCenterStorey {
     private int id;
     private int businessCenterId;
     private String map;
+    private Integer level;
     private String name;
 
     @OneToMany(mappedBy = "businessCenterStoreyId")
@@ -42,6 +43,14 @@ public class BusinessCenterStorey {
         this.map = map;
     }
 
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
     public String getName() {
         return name;
     }
@@ -63,12 +72,12 @@ public class BusinessCenterStorey {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BusinessCenterStorey that = (BusinessCenterStorey) o;
-        return id == that.id && businessCenterId == that.businessCenterId && Objects.equals(map, that.map) && Objects.equals(name, that.name) && Objects.equals(rooms, that.rooms);
+        return id == that.id && businessCenterId == that.businessCenterId && Objects.equals(map, that.map) && Objects.equals(level, that.level) && Objects.equals(name, that.name) && Objects.equals(rooms, that.rooms);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, businessCenterId, map, name, rooms);
+        return Objects.hash(id, businessCenterId, map, level, name, rooms);
     }
 
     @Override
@@ -77,6 +86,7 @@ public class BusinessCenterStorey {
             "id=" + id +
             ", businessCenterId=" + businessCenterId +
             ", map='" + map + '\'' +
+            ", level=" + level +
             ", name='" + name + '\'' +
             ", rooms=" + rooms +
             '}';

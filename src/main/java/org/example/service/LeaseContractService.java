@@ -6,11 +6,15 @@ import org.example.model.businesscenter.BusinessCenterStorey;
 import org.example.model.businesscenter.Room;
 import org.example.model.document.LeaseContract;
 import org.example.model.event.LeaseEvent;
+import org.example.model.iot.equipment.EquipmentType;
+import org.example.model.iot.equipment.IotEquipment;
+import org.example.model.iot.equipment.impl.powersocket.PowerSocket;
 import org.example.model.request.Request;
-import org.example.repository.BusinessCenterRepository;
-import org.example.repository.LeaseContractRepository;
-import org.example.repository.LeaseEventRepository;
-import org.example.repository.RequestRepository;
+import org.example.model.telemetry.BaseTelemetry;
+import org.example.model.telemetry.impl.iot.PowerSocketTelemetry;
+import org.example.repository.*;
+import org.example.repository.equipment.PowerSocketRepository;
+import org.example.repository.telemetry.PowerSocketTelemetryRepository;
 import org.example.util.Interval;
 import org.springframework.stereotype.Service;
 
@@ -21,19 +25,25 @@ import java.util.stream.Collectors;
 @Service
 public class LeaseContractService {
 
-    private LeaseContractRepository leaseContractRepository;
-    private LeaseEventRepository leaseEventRepository;
+    private final LeaseContractRepository leaseContractRepository;
+    private final LeaseEventRepository leaseEventRepository;
     private final BusinessCenterRepository businessCenterRepository;
     private final RequestRepository requestRepository;
+    private final PowerSocketRepository powerSocketRepository;
+    private final PowerSocketTelemetryRepository powerSocketTelemetryRepository;
 
     public LeaseContractService(final LeaseContractRepository leaseContractRepository,
                                 final LeaseEventRepository leaseEventRepository,
                                 final BusinessCenterRepository businessCenterRepository,
-                                final RequestRepository requestRepository) {
+                                final RequestRepository requestRepository,
+                                final PowerSocketRepository powerSocketRepository,
+                                final PowerSocketTelemetryRepository powerSocketTelemetryRepository) {
         this.leaseContractRepository = leaseContractRepository;
         this.leaseEventRepository = leaseEventRepository;
         this.businessCenterRepository = businessCenterRepository;
         this.requestRepository = requestRepository;
+        this.powerSocketRepository = powerSocketRepository;
+        this.powerSocketTelemetryRepository = powerSocketTelemetryRepository;
     }
 
     public List<LeaseContract> getLeaseContractByRoomIdsIdTime(final List<Integer> roomIds, Instant from, Instant to) {
@@ -78,6 +88,28 @@ public class LeaseContractService {
             .sum();
     }
 
+    public Integer calcPowerConsumption(final BusinessCenter businessCenter, final List<Integer> roomIds, final Instant from, final Instant to) {
+        final List<PowerSocket> powerSockets = powerSocketRepository.findAllByRoomIdIn(roomIds);
+        final List<PowerSocketTelemetry> telemetry = powerSocketTelemetryRepository.findAllByEquipmentTypeEqualsAndEquipmentIdInAndFixTimeGreaterThanEqualAndFixTimeLessThanEqualOrderByFixTimeAsc(
+            EquipmentType.POWER_SOCKET, powerSockets.stream().map(IotEquipment::getId)
+                .collect(Collectors.toList()), from, to);
+
+        if (telemetry.isEmpty()) {
+            return 0;
+        }
+
+        final Map<Integer, List<PowerSocketTelemetry>> collect = telemetry.stream()
+            .collect(Collectors.groupingBy(BaseTelemetry::getEquipmentId));
+
+        int montlyPowerConsumption = 0;
+        for (final Map.Entry<Integer, List<PowerSocketTelemetry>> entry : collect.entrySet()) {
+            montlyPowerConsumption += entry.getValue().get(entry.getValue().size() - 1).getVatt() -
+                entry.getValue().get(0).getVatt();
+        }
+
+        return montlyPowerConsumption * businessCenter.getVattPrice();
+    }
+
     public AnalyticDto buildAnalyticDto(final Integer businessCenterId, final Interval interval) {
         final Optional<BusinessCenter> businessCenter = businessCenterRepository.findById(businessCenterId);
         if (businessCenter.isEmpty()) {
@@ -98,11 +130,10 @@ public class LeaseContractService {
         analyticDto.setDate(Date.from(interval.getFrom()));
         analyticDto.setRoomCount(roomIds.size());
         analyticDto.setRentCount(leaseContractByTime.size());
-
         analyticDto.setExpectedIncome(calcExpectedIncome(leaseContractByTime, interval.getFrom()));
         analyticDto.setRealIncome(calcRealIncome(leaseContractByTime, interval.getFrom(), interval.getTo()));
-
         analyticDto.setRequestExpenses(calcRequestExpenses(roomIds, interval.getFrom(), interval.getTo()));
+        analyticDto.setPowerConsumption(calcPowerConsumption(businessCenter.get(), roomIds, interval.getFrom(), interval.getTo()));
 
         return analyticDto;
     }

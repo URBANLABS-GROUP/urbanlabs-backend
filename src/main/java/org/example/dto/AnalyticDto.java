@@ -11,6 +11,7 @@ public class AnalyticDto {
     private Integer expectedIncome;
     private Integer realIncome;
     private Integer requestExpenses;
+    private Integer powerConsumption;
 
     public Date getDate() {
         return date;
@@ -60,17 +61,25 @@ public class AnalyticDto {
         this.requestExpenses = requestExpenses;
     }
 
+    public Integer getPowerConsumption() {
+        return powerConsumption;
+    }
+
+    public void setPowerConsumption(Integer powerConsumption) {
+        this.powerConsumption = powerConsumption;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AnalyticDto that = (AnalyticDto) o;
-        return Objects.equals(date, that.date) && Objects.equals(roomCount, that.roomCount) && Objects.equals(rentCount, that.rentCount) && Objects.equals(expectedIncome, that.expectedIncome) && Objects.equals(realIncome, that.realIncome) && Objects.equals(requestExpenses, that.requestExpenses);
+        return Objects.equals(date, that.date) && Objects.equals(roomCount, that.roomCount) && Objects.equals(rentCount, that.rentCount) && Objects.equals(expectedIncome, that.expectedIncome) && Objects.equals(realIncome, that.realIncome) && Objects.equals(requestExpenses, that.requestExpenses) && Objects.equals(powerConsumption, that.powerConsumption);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(date, roomCount, rentCount, expectedIncome, realIncome, requestExpenses);
+        return Objects.hash(date, roomCount, rentCount, expectedIncome, realIncome, requestExpenses, powerConsumption);
     }
 
     @Override
@@ -82,6 +91,7 @@ public class AnalyticDto {
             ", expectedIncome=" + expectedIncome +
             ", realIncome=" + realIncome +
             ", requestExpenses=" + requestExpenses +
+            ", powerConsumption=" + powerConsumption +
             '}';
     }
 }

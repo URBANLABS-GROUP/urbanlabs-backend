@@ -1,4 +1,4 @@
-package org.example.model.iot.equipment.impl.powersocket;
+package org.example.model.iot.equipment.impl.temp;
 
 import org.example.model.iot.equipment.IotEquipment;
 
@@ -7,17 +7,17 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.Objects;
 
-@Entity(name = "power_socket_equipment")
-public class PowerSocket extends IotEquipment {
+@Entity(name = "temp_socket_equipment")
+public class TempSensor extends IotEquipment {
 
     @Enumerated(EnumType.STRING)
-    private PowerSocketModel model;
+    private TempSensorModel model;
 
-    public PowerSocketModel getModel() {
+    public TempSensorModel getModel() {
         return model;
     }
 
-    public void setModel(PowerSocketModel model) {
+    public void setModel(TempSensorModel model) {
         this.model = model;
     }
 
@@ -25,7 +25,7 @@ public class PowerSocket extends IotEquipment {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PowerSocket that = (PowerSocket) o;
+        TempSensor that = (TempSensor) o;
         return model == that.model;
     }
 
