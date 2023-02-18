@@ -1,8 +1,10 @@
 package org.example.controller;
 
 import com.sun.istack.NotNull;
+import org.example.dto.RoomTelemetryInfo;
 import org.example.model.businesscenter.Room;
 import org.example.repository.RoomRepository;
+import org.example.service.RoomTelemetryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +19,22 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class RoomController {
 
     private final RoomRepository roomRepository;
+    private final RoomTelemetryService roomTelemetryService;
 
-    public RoomController(final RoomRepository roomRepository) {
+    public RoomController(final RoomRepository roomRepository,
+                          final RoomTelemetryService roomTelemetryService) {
         this.roomRepository = roomRepository;
+        this.roomTelemetryService = roomTelemetryService;
+    }
+
+    @RequestMapping(value = "/info/{id}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<RoomTelemetryInfo> getRoomTelemetryData(@PathVariable Integer id) {
+        final Optional<Room> room = roomRepository.findById(id);
+        if (room.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(roomTelemetryService.buildRoomTelemetryInfo(room.get()));
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
@@ -34,8 +49,8 @@ public class RoomController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Room> update(
-            @PathVariable("id") final int id,
-            @RequestBody @NotNull @Validated final Room entity) {
+        @PathVariable("id") final int id,
+        @RequestBody @NotNull @Validated final Room entity) {
 
         Optional<Room> room = roomRepository.findById(id);
         if (room.isEmpty()) {

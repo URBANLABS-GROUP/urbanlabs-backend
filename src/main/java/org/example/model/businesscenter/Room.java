@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Arrays;
 import java.util.Objects;
 
 @Entity(name = "room")
@@ -18,6 +17,7 @@ public class Room {
     private String name;
     private Integer leaseContractId;
     private Integer requiredTemp;
+    private Integer allowablePowerConsumption;
 
     public Integer getId() {
         return id;
@@ -67,17 +67,25 @@ public class Room {
         this.requiredTemp = requiredTemp;
     }
 
+    public Integer getAllowablePowerConsumption() {
+        return allowablePowerConsumption;
+    }
+
+    public void setAllowablePowerConsumption(Integer powerConsumption) {
+        this.allowablePowerConsumption = powerConsumption;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Room room = (Room) o;
-        return businessCenterStoreyId == room.businessCenterStoreyId && Objects.equals(id, room.id) && Objects.equals(position, room.position) && Objects.equals(name, room.name) && Objects.equals(leaseContractId, room.leaseContractId) && Objects.equals(requiredTemp, room.requiredTemp);
+        return businessCenterStoreyId == room.businessCenterStoreyId && Objects.equals(id, room.id) && Objects.equals(position, room.position) && Objects.equals(name, room.name) && Objects.equals(leaseContractId, room.leaseContractId) && Objects.equals(requiredTemp, room.requiredTemp) && Objects.equals(allowablePowerConsumption, room.allowablePowerConsumption);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, businessCenterStoreyId, position, name, leaseContractId, requiredTemp);
+        return Objects.hash(id, businessCenterStoreyId, position, name, leaseContractId, requiredTemp, allowablePowerConsumption);
     }
 
     @Override
@@ -89,6 +97,7 @@ public class Room {
             ", name='" + name + '\'' +
             ", leaseContractId=" + leaseContractId +
             ", requiredTemp=" + requiredTemp +
+            ", powerConsumption=" + allowablePowerConsumption +
             '}';
     }
 }

@@ -18,22 +18,16 @@ import org.example.model.iot.equipment.impl.smoke.SmokeSensor;
 import org.example.model.iot.equipment.impl.smoke.SmokeSensorType;
 import org.example.model.iot.equipment.impl.temp.TempSensor;
 import org.example.model.iot.equipment.impl.temp.TempSensorModel;
+import org.example.model.iot.equipment.impl.water.WaterSensor;
+import org.example.model.iot.equipment.impl.water.WaterSensorModel;
+import org.example.model.iot.equipment.impl.water.WaterTemp;
 import org.example.model.request.Request;
 import org.example.model.request.RequestStatus;
 import org.example.model.request.RequestType;
-import org.example.model.telemetry.impl.iot.MoveSensorTelemetry;
-import org.example.model.telemetry.impl.iot.PowerSocketTelemetry;
-import org.example.model.telemetry.impl.iot.SmokeSensorTelemetry;
-import org.example.model.telemetry.impl.iot.TempSensorTelemetry;
+import org.example.model.telemetry.impl.iot.*;
 import org.example.repository.*;
-import org.example.repository.equipment.MoveSensorRepository;
-import org.example.repository.equipment.PowerSocketRepository;
-import org.example.repository.equipment.SmokeSensorRepository;
-import org.example.repository.equipment.TempSensorRepository;
-import org.example.repository.telemetry.MoveSensorTelemetryRepository;
-import org.example.repository.telemetry.PowerSocketTelemetryRepository;
-import org.example.repository.telemetry.SmokeSensorTelemetryRepository;
-import org.example.repository.telemetry.TempSensorTelemetryRepository;
+import org.example.repository.equipment.*;
+import org.example.repository.telemetry.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,6 +76,10 @@ public class TestDataController {
     MoveSensorTelemetryRepository moveSensorTelemetryRepository;
     @Autowired
     CheckRepository checkRepository;
+    @Autowired
+    WaterSensorRepository waterSensorRepository;
+    @Autowired
+    WaterSensorTelemetryRepository waterSensorTelemetryRepository;
 
     private static final AtomicInteger roomCounter = new AtomicInteger(0);
 
@@ -101,7 +99,9 @@ public class TestDataController {
                               SmokeSensorTelemetryRepository smokeSensorTelemetryRepository,
                               MoveSensorRepository moveSensorRepository,
                               MoveSensorTelemetryRepository moveSensorTelemetryRepository,
-                              CheckRepository checkRepository) {
+                              CheckRepository checkRepository,
+                              WaterSensorRepository waterSensorRepository,
+                              WaterSensorTelemetryRepository waterSensorTelemetryRepository) {
         this.businessCenterRepository = businessCenterRepository;
         this.businessCenterStoreyRepository = businessCenterStoreyRepository;
         this.roomRepository = roomRepository;
@@ -119,6 +119,8 @@ public class TestDataController {
         this.moveSensorRepository = moveSensorRepository;
         this.moveSensorTelemetryRepository = moveSensorTelemetryRepository;
         this.checkRepository = checkRepository;
+        this.waterSensorRepository = waterSensorRepository;
+        this.waterSensorTelemetryRepository = waterSensorTelemetryRepository;
 
         testData();
     }
@@ -239,7 +241,6 @@ public class TestDataController {
             buildRequest(rooms.get(5), 6500, Instant.parse("2023-02-05T00:00:00Z")),
             buildRequest(rooms.get(7), 8000, Instant.parse("2023-02-27T14:00:00Z")),
             buildRequest(rooms.get(7), 15000, Instant.parse("2023-03-27T14:00:00Z"))
-
         );
 
         requests = requestRepository.saveAll(requests);
@@ -259,6 +260,9 @@ public class TestDataController {
         final List<MoveSensor> moveSensors = new ArrayList<>();
         buildMoveIotData(officeRooms, from, to, moveSensors);
 
+        final List<WaterSensor> waterSensors = new ArrayList<>();
+        buildWaterIotData(officeRooms, from, to, waterSensors);
+
         final List<Check> checks = new ArrayList<>();
         for (Room officeRoom : officeRooms) {
             checks.add(buildCheck(officeRoom, 6300));
@@ -275,6 +279,25 @@ public class TestDataController {
         check.setTime(Instant.parse("2023-01-01T00:00:00Z"));
 
         return check;
+    }
+
+
+    private void buildWaterIotData(List<Room> officeRooms, Instant from, Instant to, List<WaterSensor> waterSensors) {
+        for (final Room officeRoom : officeRooms) {
+            waterSensors.addAll(buildWaterSensorEquipment(officeRoom));
+        }
+        waterSensorRepository.saveAll(waterSensors);
+        final List<WaterSensorTelemetry> waterTelemetries = new ArrayList<>();
+        for (final WaterSensor waterSensor : waterSensors) {
+            for (long i = from.getEpochSecond(); i < to.getEpochSecond(); i += 3600) {
+                waterTelemetries.add(
+                    buildWaterSensorTelemetry(waterSensor,
+                        Instant.ofEpochSecond(i),
+                        i == 4)
+                );
+            }
+        }
+        waterSensorTelemetryRepository.saveAll(waterTelemetries);
     }
 
     private void buildMoveIotData(List<Room> officeRooms, Instant from, Instant to, List<MoveSensor> moveSensors) {
@@ -305,7 +328,10 @@ public class TestDataController {
 
         for (final PowerSocket powerSocket : powerSockets) {
             for (long i = from.getEpochSecond(); i < to.getEpochSecond(); i += 3600) {
-                powerSocketTelemetries.add(buildPowerSocketTelemetry(powerSocket, Instant.ofEpochSecond(i)));
+                powerSocketTelemetries.add(buildPowerSocketTelemetry(powerSocket,
+                    Instant.ofEpochSecond(i),
+                    powerSocket.getRoomId() == 10
+                ));
             }
         }
 
@@ -349,12 +375,42 @@ public class TestDataController {
         smokeSensorTelemetryRepository.saveAll(smokeSocketTelemetries);
     }
 
+    private static List<WaterSensor> buildWaterSensorEquipment(final Room room) {
+        final WaterSensor waterSensorCold = new WaterSensor();
+        waterSensorCold.setRoomId(room.getId());
+        waterSensorCold.setModel(WaterSensorModel.MOCK);
+        waterSensorCold.setWaterTemp(WaterTemp.COLD);
+
+        final WaterSensor waterSensorHot = new WaterSensor();
+        waterSensorHot.setRoomId(room.getId());
+        waterSensorHot.setModel(WaterSensorModel.MOCK);
+        waterSensorCold.setWaterTemp(WaterTemp.HOT);
+
+        return List.of(waterSensorCold, waterSensorHot);
+    }
+
     private static MoveSensor buildMoveSensorEquipment(final Room room) {
         final MoveSensor smokeSensor = new MoveSensor();
         smokeSensor.setRoomId(room.getId());
         smokeSensor.setModel(MoveSensorModel.MOCK);
 
         return smokeSensor;
+    }
+
+    private static WaterSensorTelemetry buildWaterSensorTelemetry(final WaterSensor moveSensor,
+                                                                  final Instant time,
+                                                                  final boolean max) {
+        final WaterSensorTelemetry waterSensorTelemetry = new WaterSensorTelemetry();
+        waterSensorTelemetry.setEquipmentId(moveSensor.getId());
+        waterSensorTelemetry.setEquipmentType(EquipmentType.WATER_SENSOR);
+        waterSensorTelemetry.setFixTime(time);
+
+        waterSensorTelemetry.setWaterVolume((int) (time.getEpochSecond() / 3600));
+        if (max) {
+            waterSensorTelemetry.setWaterVolume((int) (waterSensorTelemetry.getWaterVolume() * 1.41));
+        }
+
+        return waterSensorTelemetry;
     }
 
     private static MoveSensorTelemetry buildMoveSensorTelemetry(final MoveSensor moveSensor,
@@ -369,7 +425,6 @@ public class TestDataController {
 
         return tempSensorTelemetry;
     }
-
 
     private static SmokeSensorTelemetry buildSmokeSensorTelemetry(final SmokeSensor smokeSensor,
                                                                   final Instant time,
@@ -413,13 +468,16 @@ public class TestDataController {
         return powerSocket;
     }
 
-    private static PowerSocketTelemetry buildPowerSocketTelemetry(final PowerSocket powerSocket, final Instant time) {
+    private static PowerSocketTelemetry buildPowerSocketTelemetry(final PowerSocket powerSocket, final Instant time, boolean max) {
         final PowerSocketTelemetry powerSocketTelemetry = new PowerSocketTelemetry();
         powerSocketTelemetry.setEquipmentId(powerSocket.getId());
         powerSocketTelemetry.setEquipmentType(EquipmentType.POWER_SOCKET);
         powerSocketTelemetry.setFixTime(time);
 
         powerSocketTelemetry.setVatt((int) (time.getEpochSecond() / 3600));
+        if (max) {
+            powerSocketTelemetry.setVatt((int) (powerSocketTelemetry.getVatt() * 1.4));
+        }
 
         return powerSocketTelemetry;
     }
@@ -469,6 +527,7 @@ public class TestDataController {
         room.setName("Комната " + roomCounter.incrementAndGet());
         room.setBusinessCenterStoreyId(businessCenterStorey.getId());
         room.setRequiredTemp(270);
+        room.setAllowablePowerConsumption(1000);
         return room;
     }
 

@@ -1,8 +1,10 @@
-package org.example.dto;
+package org.example.dto.alert.impl;
+
+import org.example.dto.alert.Alert;
 
 import java.util.Objects;
 
-import static org.example.dto.AlertType.TOO_HOT_TEMP;
+import static org.example.dto.alert.AlertType.TOO_HOT_TEMP;
 
 public class TooHotTempAlert extends Alert {
 

@@ -1,4 +1,7 @@
-package org.example.dto;
+package org.example.dto.alert.impl;
+
+import org.example.dto.alert.Alert;
+import org.example.dto.alert.AlertType;
 
 import java.util.Objects;
 

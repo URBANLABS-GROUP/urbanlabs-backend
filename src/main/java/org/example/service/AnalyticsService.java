@@ -1,10 +1,11 @@
 package org.example.service;
 
 import org.example.dao.DaoFactory;
-import org.example.dto.Alert;
 import org.example.dto.AnalyticDto;
-import org.example.dto.RentWithNegativeProfitAlert;
-import org.example.dto.TooHotTempAlert;
+import org.example.dto.alert.Alert;
+import org.example.dto.alert.impl.RentWithNegativeProfitAlert;
+import org.example.dto.alert.impl.TooHotTempAlert;
+import org.example.dto.alert.impl.TooMuchPowerConsumptionAlert;
 import org.example.model.businesscenter.BusinessCenter;
 import org.example.model.businesscenter.BusinessCenterStorey;
 import org.example.model.businesscenter.Room;
@@ -64,9 +65,38 @@ public class AnalyticsService {
         final List<Alert> alerts = new ArrayList<>();
         alerts.addAll(buildRentWithNegativeProfit(roomIds, interval.getFrom(), interval.getTo()));
         alerts.addAll(buildTooHotTempAlert(roomIds, interval.getFrom(), interval.getTo()));
+        alerts.addAll(buildTooMuchPowerConsumptionAlert(roomIds, interval.getFrom(), interval.getTo()));
 
         analyticDto.setAlerts(alerts);
         return analyticDto;
+    }
+
+    private List<TooMuchPowerConsumptionAlert> buildTooMuchPowerConsumptionAlert(final List<Integer> roomIds,
+                                                                                 final Instant from,
+                                                                                 final Instant to) {
+        if (!to.isAfter(from)) {
+            return Collections.emptyList();
+        }
+
+        List<TooMuchPowerConsumptionAlert> result = new ArrayList<>();
+
+        List<Room> rooms = daoFactory.getRoomRepository().findAllById(roomIds);
+        for (final Room room : rooms) {
+            if (room.getLeaseContractId() == null) {
+                continue;
+            }
+            final Optional<LeaseContract> leaseContract = daoFactory.getLeaseContractRepository().findById(room.getLeaseContractId());
+            if (leaseContract.isEmpty()) {
+                continue;
+            }
+            final Integer powerConsumption = calcPowerConsumption(Collections.singletonList(room.getId()), from, to);
+
+            if (room.getAllowablePowerConsumption() < powerConsumption) {
+                result.add(new TooMuchPowerConsumptionAlert(room.getId(), powerConsumption, room.getAllowablePowerConsumption()));
+            }
+        }
+
+        return result;
     }
 
     private List<RentWithNegativeProfitAlert> buildRentWithNegativeProfit(final List<Integer> roomIds,
@@ -89,17 +119,22 @@ public class AnalyticsService {
             }
             final Optional<BusinessCenterStorey> businessCenterStorey = daoFactory.getBusinessCenterStoreyRepository().findById(room.getBusinessCenterStoreyId());
             final Optional<BusinessCenter> businessCenter = daoFactory.getBusinessCenterRepository().findById(businessCenterStorey.get().getBusinessCenterId());
-            final Integer powerExpenses = calcPowerExpensive(businessCenter.get(), Collections.singletonList(room.getId()), from, to);
-            final Integer requestExpenses = calcRequestExpenses(Collections.singletonList(room.getId()), from, to);
-            final Integer checkExpenses = calcCheckExpenses(Collections.singletonList(room.getId()), from, to);
-
-            int totalExpenses = powerExpenses + requestExpenses + checkExpenses; // todo water sensor
+            int totalExpenses = buildTotalExpenses(businessCenter.get(), room, from, to);
             if (leaseContract.get().getRent() < totalExpenses) {
                 result.add(new RentWithNegativeProfitAlert(room.getId(), leaseContract.get().getRent(), totalExpenses));
             }
         }
 
         return result;
+    }
+
+    private int buildTotalExpenses(BusinessCenter businessCenter, Room room, Instant from, Instant to) {
+        final Integer powerExpenses = calcPowerExpensive(businessCenter, Collections.singletonList(room.getId()), from, to);
+        final Integer requestExpenses = calcRequestExpenses(Collections.singletonList(room.getId()), from, to);
+        final Integer checkExpenses = calcCheckExpenses(Collections.singletonList(room.getId()), from, to);
+
+        int totalExpenses = powerExpenses + requestExpenses + checkExpenses; // todo water sensor
+        return totalExpenses;
     }
 
     private List<TooHotTempAlert> buildTooHotTempAlert(final List<Integer> roomIds,
@@ -130,7 +165,7 @@ public class AnalyticsService {
                     .findAllByEquipmentTypeEqualsAndEquipmentIdInAndFixTimeGreaterThanEqualAndFixTimeLessThanEqualOrderByFixTimeAsc
                         (EquipmentType.TEMP, Collections.singletonList(tempSensor.getId()), from, to);
 
-                if (telemetries.isEmpty()){
+                if (telemetries.isEmpty()) {
                     continue;
                 }
 
@@ -202,6 +237,10 @@ public class AnalyticsService {
     }
 
     private Integer calcPowerExpensive(final BusinessCenter businessCenter, final List<Integer> roomIds, final Instant from, final Instant to) {
+        return calcPowerConsumption(roomIds, from, to) * businessCenter.getVattPrice();
+    }
+
+    private Integer calcPowerConsumption(final List<Integer> roomIds, final Instant from, final Instant to) {
         final List<PowerSocket> powerSockets = daoFactory.getPowerSocketRepository().findAllByRoomIdIn(roomIds);
         final List<PowerSocketTelemetry> telemetry = daoFactory.getPowerSocketTelemetryRepository().findAllByEquipmentTypeEqualsAndEquipmentIdInAndFixTimeGreaterThanEqualAndFixTimeLessThanEqualOrderByFixTimeAsc(
             EquipmentType.POWER_SOCKET, powerSockets.stream().map(IotEquipment::getId)
@@ -220,6 +259,6 @@ public class AnalyticsService {
                 entry.getValue().get(0).getVatt();
         }
 
-        return montlyPowerConsumption * businessCenter.getVattPrice();
+        return montlyPowerConsumption;
     }
 }

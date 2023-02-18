@@ -1,5 +1,7 @@
 package org.example.dto;
 
+import org.example.dto.alert.Alert;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;

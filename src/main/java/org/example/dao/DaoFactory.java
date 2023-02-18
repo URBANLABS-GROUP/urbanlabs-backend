@@ -1,14 +1,8 @@
 package org.example.dao;
 
 import org.example.repository.*;
-import org.example.repository.equipment.MoveSensorRepository;
-import org.example.repository.equipment.PowerSocketRepository;
-import org.example.repository.equipment.SmokeSensorRepository;
-import org.example.repository.equipment.TempSensorRepository;
-import org.example.repository.telemetry.MoveSensorTelemetryRepository;
-import org.example.repository.telemetry.PowerSocketTelemetryRepository;
-import org.example.repository.telemetry.SmokeSensorTelemetryRepository;
-import org.example.repository.telemetry.TempSensorTelemetryRepository;
+import org.example.repository.equipment.*;
+import org.example.repository.telemetry.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +26,8 @@ public class DaoFactory {
     private final MoveSensorRepository moveSensorRepository;
     private final MoveSensorTelemetryRepository moveSensorTelemetryRepository;
     private final CheckRepository checkRepository;
+    private final WaterSensorRepository waterSensorRepository;
+    private final WaterSensorTelemetryRepository waterSensorTelemetryRepository;
 
     @Autowired
     public DaoFactory(final BusinessCenterRepository businessCenterRepository,
@@ -50,7 +46,9 @@ public class DaoFactory {
                       final SmokeSensorTelemetryRepository smokeSensorTelemetryRepository,
                       final MoveSensorRepository moveSensorRepository,
                       final MoveSensorTelemetryRepository moveSensorTelemetryRepository,
-                      final CheckRepository checkRepository) {
+                      final CheckRepository checkRepository,
+                      final WaterSensorRepository waterSensorRepository,
+                      final WaterSensorTelemetryRepository waterSensorTelemetryRepository) {
         this.businessCenterRepository = businessCenterRepository;
         this.businessCenterStoreyRepository = businessCenterStoreyRepository;
         this.roomRepository = roomRepository;
@@ -68,6 +66,8 @@ public class DaoFactory {
         this.moveSensorRepository = moveSensorRepository;
         this.moveSensorTelemetryRepository = moveSensorTelemetryRepository;
         this.checkRepository = checkRepository;
+        this.waterSensorRepository = waterSensorRepository;
+        this.waterSensorTelemetryRepository = waterSensorTelemetryRepository;
     }
 
     public BusinessCenterRepository getBusinessCenterRepository() {
@@ -136,5 +136,13 @@ public class DaoFactory {
 
     public CheckRepository getCheckRepository() {
         return checkRepository;
+    }
+
+    public WaterSensorRepository getWaterSensorRepository() {
+        return waterSensorRepository;
+    }
+
+    public WaterSensorTelemetryRepository getWaterSensorTelemetryRepository() {
+        return waterSensorTelemetryRepository;
     }
 }
