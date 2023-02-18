@@ -1,6 +1,7 @@
 package org.example.model.document;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Objects;
 
 @Entity
@@ -12,6 +13,7 @@ public class Check {
     private Integer id;
 
     private Integer roomId;
+    private Instant time;
     private Integer cost;
 
     public Integer getId() {
@@ -30,6 +32,14 @@ public class Check {
         this.roomId = roomId;
     }
 
+    public Instant getTime() {
+        return time;
+    }
+
+    public void setTime(Instant time) {
+        this.time = time;
+    }
+
     public Integer getCost() {
         return cost;
     }
@@ -43,12 +53,12 @@ public class Check {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Check check = (Check) o;
-        return Objects.equals(id, check.id) && Objects.equals(roomId, check.roomId) && Objects.equals(cost, check.cost);
+        return Objects.equals(id, check.id) && Objects.equals(roomId, check.roomId) && Objects.equals(time, check.time) && Objects.equals(cost, check.cost);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, roomId, cost);
+        return Objects.hash(id, roomId, time, cost);
     }
 
     @Override
@@ -56,6 +66,7 @@ public class Check {
         return "Check{" +
             "id=" + id +
             ", roomId=" + roomId +
+            ", time=" + time +
             ", cost=" + cost +
             '}';
     }

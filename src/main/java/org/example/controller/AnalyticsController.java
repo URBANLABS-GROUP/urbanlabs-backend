@@ -2,7 +2,7 @@ package org.example.controller;
 
 import com.sun.istack.NotNull;
 import org.example.dto.AnalyticDto;
-import org.example.service.LeaseContractService;
+import org.example.service.AnalyticsService;
 import org.example.util.DateTimeUtils;
 import org.example.util.Interval;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,10 +21,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/analytics")
 public class AnalyticsController {
 
-    private final LeaseContractService leaseContractService;
+    private final AnalyticsService analyticsService;
 
-    public AnalyticsController(final LeaseContractService leaseContractService) {
-        this.leaseContractService = leaseContractService;
+    public AnalyticsController(final AnalyticsService analyticsService) {
+        this.analyticsService = analyticsService;
     }
 
     @RequestMapping(value = "/analyze/{businessCenterId}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
@@ -40,7 +40,7 @@ public class AnalyticsController {
         );
         final List<AnalyticDto> result = intervals.stream()
             .filter(interval -> interval.getFrom().isBefore(Instant.now()))
-            .map(interval -> leaseContractService.buildAnalyticDto(businessCenterId, interval))
+            .map(interval -> analyticsService.buildAnalyticDto(businessCenterId, interval))
             .collect(Collectors.toList());
 
         return ResponseEntity.ok(result);

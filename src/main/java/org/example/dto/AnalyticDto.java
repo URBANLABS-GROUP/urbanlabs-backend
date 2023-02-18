@@ -1,6 +1,7 @@
 package org.example.dto;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class AnalyticDto {
@@ -11,7 +12,9 @@ public class AnalyticDto {
     private Integer expectedIncome;
     private Integer realIncome;
     private Integer requestExpenses;
-    private Integer powerConsumption;
+    private Integer checkExpenses;
+    private Integer powerExpenses;
+    private List<Alert> alerts;
 
     public Date getDate() {
         return date;
@@ -61,12 +64,28 @@ public class AnalyticDto {
         this.requestExpenses = requestExpenses;
     }
 
-    public Integer getPowerConsumption() {
-        return powerConsumption;
+    public Integer getCheckExpenses() {
+        return checkExpenses;
     }
 
-    public void setPowerConsumption(Integer powerConsumption) {
-        this.powerConsumption = powerConsumption;
+    public void setCheckExpenses(Integer checkExpenses) {
+        this.checkExpenses = checkExpenses;
+    }
+
+    public Integer getPowerExpenses() {
+        return powerExpenses;
+    }
+
+    public void setPowerExpenses(Integer powerExpenses) {
+        this.powerExpenses = powerExpenses;
+    }
+
+    public List<Alert> getAlerts() {
+        return alerts;
+    }
+
+    public void setAlerts(List<Alert> alerts) {
+        this.alerts = alerts;
     }
 
     @Override
@@ -74,12 +93,12 @@ public class AnalyticDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AnalyticDto that = (AnalyticDto) o;
-        return Objects.equals(date, that.date) && Objects.equals(roomCount, that.roomCount) && Objects.equals(rentCount, that.rentCount) && Objects.equals(expectedIncome, that.expectedIncome) && Objects.equals(realIncome, that.realIncome) && Objects.equals(requestExpenses, that.requestExpenses) && Objects.equals(powerConsumption, that.powerConsumption);
+        return Objects.equals(date, that.date) && Objects.equals(roomCount, that.roomCount) && Objects.equals(rentCount, that.rentCount) && Objects.equals(expectedIncome, that.expectedIncome) && Objects.equals(realIncome, that.realIncome) && Objects.equals(requestExpenses, that.requestExpenses) && Objects.equals(checkExpenses, that.checkExpenses) && Objects.equals(powerExpenses, that.powerExpenses) && Objects.equals(alerts, that.alerts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(date, roomCount, rentCount, expectedIncome, realIncome, requestExpenses, powerConsumption);
+        return Objects.hash(date, roomCount, rentCount, expectedIncome, realIncome, requestExpenses, checkExpenses, powerExpenses, alerts);
     }
 
     @Override
@@ -91,7 +110,9 @@ public class AnalyticDto {
             ", expectedIncome=" + expectedIncome +
             ", realIncome=" + realIncome +
             ", requestExpenses=" + requestExpenses +
-            ", powerConsumption=" + powerConsumption +
+            ", checkExpenses=" + checkExpenses +
+            ", powerConsumption=" + powerExpenses +
+            ", alerts=" + alerts +
             '}';
     }
 }

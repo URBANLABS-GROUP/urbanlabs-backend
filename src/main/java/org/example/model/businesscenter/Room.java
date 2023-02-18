@@ -17,6 +17,7 @@ public class Room {
     private String position;
     private String name;
     private Integer leaseContractId;
+    private Integer requiredTemp;
 
     public Integer getId() {
         return id;
@@ -58,17 +59,25 @@ public class Room {
         this.leaseContractId = leaseContractId;
     }
 
+    public Integer getRequiredTemp() {
+        return requiredTemp;
+    }
+
+    public void setRequiredTemp(Integer requiredTemp) {
+        this.requiredTemp = requiredTemp;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Room room = (Room) o;
-        return businessCenterStoreyId == room.businessCenterStoreyId && Objects.equals(id, room.id) && Objects.equals(position, room.position) && Objects.equals(name, room.name) && Objects.equals(leaseContractId, room.leaseContractId);
+        return businessCenterStoreyId == room.businessCenterStoreyId && Objects.equals(id, room.id) && Objects.equals(position, room.position) && Objects.equals(name, room.name) && Objects.equals(leaseContractId, room.leaseContractId) && Objects.equals(requiredTemp, room.requiredTemp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, businessCenterStoreyId, position, name, leaseContractId);
+        return Objects.hash(id, businessCenterStoreyId, position, name, leaseContractId, requiredTemp);
     }
 
     @Override
@@ -79,6 +88,7 @@ public class Room {
             ", position='" + position + '\'' +
             ", name='" + name + '\'' +
             ", leaseContractId=" + leaseContractId +
+            ", requiredTemp=" + requiredTemp +
             '}';
     }
 }

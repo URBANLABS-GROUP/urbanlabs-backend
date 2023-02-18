@@ -195,7 +195,7 @@ public class TestDataController {
 
         rooms = roomRepository.saveAll(rooms);
 
-        final List<LeaseContract> leaseContracts = List.of(
+        List<LeaseContract> leaseContracts = List.of(
             buildLeaseContract(rooms.get(0), lessor, lessee),
             buildLeaseContract(rooms.get(2), lessor, lessee),
             buildLeaseContract(rooms.get(3), lessor, lessee),
@@ -212,6 +212,11 @@ public class TestDataController {
 
         leaseContractRepository.saveAll(leaseContracts);
 
+        for (LeaseContract leaseContract : leaseContracts) {
+            Room room = roomRepository.findById(leaseContract.getRoomId()).get();
+            room.setLeaseContractId(leaseContract.getId());
+            roomRepository.save(room);
+        }
 
         final List<LeaseEvent> leaseEvents = List.of(
             buildLeaseEvent(leaseContracts.get(0), 15000),
@@ -222,7 +227,7 @@ public class TestDataController {
             buildLeaseEvent(leaseContracts.get(8), 50000),
             buildLeaseEvent(leaseContracts.get(9), 50000),
             buildLeaseEvent(leaseContracts.get(10), 50000),
-            buildLeaseEvent(leaseContracts.get(11), 50000)
+            buildLeaseEvent(leaseContracts.get(11), 1000)
         );
 
         leaseEventRepository.saveAll(leaseEvents);
@@ -267,6 +272,7 @@ public class TestDataController {
         Check check = new Check();
         check.setRoomId(room.getId());
         check.setCost(cost);
+        check.setTime(Instant.parse("2023-01-01T00:00:00Z"));
 
         return check;
     }
@@ -298,7 +304,7 @@ public class TestDataController {
         final List<PowerSocketTelemetry> powerSocketTelemetries = new ArrayList<>();
 
         for (final PowerSocket powerSocket : powerSockets) {
-            for (long i = from.getEpochSecond(); i < to.getEpochSecond(); i += 900) {
+            for (long i = from.getEpochSecond(); i < to.getEpochSecond(); i += 3600) {
                 powerSocketTelemetries.add(buildPowerSocketTelemetry(powerSocket, Instant.ofEpochSecond(i)));
             }
         }
@@ -317,7 +323,7 @@ public class TestDataController {
                 tempSocketTelemetries.add(
                     buildTempSensorTelemetry(tempSensor,
                         Instant.ofEpochSecond(i),
-                        i == 5)
+                        tempSensor.getRoomId() == 9)
                 );
             }
         }
@@ -391,7 +397,7 @@ public class TestDataController {
                                                                 final boolean hot) {
         final TempSensorTelemetry tempSensorTelemetry = new TempSensorTelemetry();
         tempSensorTelemetry.setEquipmentId(tempSensor.getId());
-        tempSensorTelemetry.setEquipmentType(EquipmentType.POWER_SOCKET);
+        tempSensorTelemetry.setEquipmentType(EquipmentType.TEMP);
         tempSensorTelemetry.setFixTime(time);
 
         tempSensorTelemetry.setTemp(hot ? 330 : 260);
@@ -452,7 +458,7 @@ public class TestDataController {
         leaseContract.setLesseeId(lessee.getId());
         leaseContract.setRoomId(room.getId());
 
-        leaseContract.setRent(50000);
+        leaseContract.setRent(room.getId() == 15 ? 5000 : 50000);
         leaseContract.setStartTime(Instant.parse("2023-01-01T00:00:00Z"));
         leaseContract.setEndTime(Instant.parse("2024-01-01T00:00:00Z"));
         return leaseContract;
@@ -462,6 +468,7 @@ public class TestDataController {
         final Room room = new Room();
         room.setName("Комната " + roomCounter.incrementAndGet());
         room.setBusinessCenterStoreyId(businessCenterStorey.getId());
+        room.setRequiredTemp(270);
         return room;
     }
 
