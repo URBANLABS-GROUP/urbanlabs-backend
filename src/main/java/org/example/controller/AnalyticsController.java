@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,8 +38,6 @@ public class AnalyticsController {
             LocalDateTime.ofInstant(from, ZoneId.of("UTC")),
             LocalDateTime.ofInstant(to, ZoneId.of("UTC"))
         );
-//        final List<Interval> intervals = Collections.singletonList(Interval.of(from, to)); // todo split by month
-//        final List<Interval> intervals = DateTimeUtils.splitByDays(Interval.of(from, to), ZoneId.of("GMT+3"));
         final List<AnalyticDto> result = intervals.stream()
             .filter(interval -> interval.getFrom().isBefore(Instant.now()))
             .map(interval -> leaseContractService.buildAnalyticDto(businessCenterId, interval))
