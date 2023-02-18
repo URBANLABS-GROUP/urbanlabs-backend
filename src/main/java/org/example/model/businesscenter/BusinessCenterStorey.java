@@ -12,6 +12,8 @@ public class BusinessCenterStorey {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int businessCenterId;
+
+    @Column(columnDefinition="TEXT")
     private String map;
     private Integer level;
     private String name;

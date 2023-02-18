@@ -1,9 +1,6 @@
 package org.example.model.businesscenter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity(name = "room")
@@ -13,6 +10,8 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private int businessCenterStoreyId;
+
+    @Column(columnDefinition="TEXT")
     private String position;
     private String name;
     private Integer leaseContractId;

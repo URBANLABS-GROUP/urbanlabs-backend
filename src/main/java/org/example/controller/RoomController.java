@@ -33,8 +33,9 @@ public class RoomController {
         if (room.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.ok(roomTelemetryService.buildRoomTelemetryInfo(room.get()));
+        RoomTelemetryInfo telemetryInfo = roomTelemetryService.buildRoomTelemetryInfo(room.get());
+        roomTelemetryService.randomizeRoomTelemetryInfo(telemetryInfo);
+        return ResponseEntity.ok(telemetryInfo);
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)

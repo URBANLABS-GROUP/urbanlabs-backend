@@ -2,6 +2,8 @@ package org.example.service;
 
 import org.example.dao.DaoFactory;
 import org.example.dto.RoomTelemetryInfo;
+import org.example.model.businesscenter.BusinessCenter;
+import org.example.model.businesscenter.BusinessCenterStorey;
 import org.example.model.businesscenter.Room;
 import org.example.model.document.LeaseContract;
 import org.example.model.iot.equipment.EquipmentType;
@@ -16,19 +18,19 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalDouble;
+import java.util.*;
 
 @Service
 public class RoomTelemetryService {
 
     private final DaoFactory daoFactory;
+    private final AnalyticsService analyticsService;
 
     @Autowired
-    public RoomTelemetryService(DaoFactory daoFactory) {
+    public RoomTelemetryService(final DaoFactory daoFactory,
+                                final AnalyticsService analyticsService) {
         this.daoFactory = daoFactory;
+        this.analyticsService = analyticsService;
     }
 
     public RoomTelemetryInfo buildRoomTelemetryInfo(Room room) {
@@ -40,6 +42,19 @@ public class RoomTelemetryService {
             Optional<LeaseContract> leaseContract = daoFactory.getLeaseContractRepository().findById(room.getLeaseContractId());
             if (leaseContract.isPresent()) {
                 roomTelemetryInfo.setRent(leaseContract.get().getRent());
+            }
+        }
+
+        Optional<BusinessCenterStorey> businessCenterStorey = daoFactory.getBusinessCenterStoreyRepository().findById(
+            room.getBusinessCenterStoreyId());
+        if (businessCenterStorey.isPresent()) {
+            Optional<BusinessCenter> businessCenter = daoFactory.getBusinessCenterRepository().findById(
+                businessCenterStorey.get().getBusinessCenterId());
+            if (businessCenter.isPresent()) {
+                int totalExpenses = analyticsService.buildTotalExpenses(businessCenter.get(), room,
+                    now.minus(30, ChronoUnit.DAYS), now);
+
+                roomTelemetryInfo.setExpenses(totalExpenses);
             }
         }
 
@@ -104,5 +119,19 @@ public class RoomTelemetryService {
         }
 
         return roomTelemetryInfo;
+    }
+
+    public void randomizeRoomTelemetryInfo(RoomTelemetryInfo roomTelemetryInfo) {
+        Random r = new Random();
+        int low = 0;
+        int high = 13;
+        int result = r.nextInt(high - low) + low;
+        roomTelemetryInfo.setCurTemp(roomTelemetryInfo.getCurTemp() + result);
+
+        int result1 = r.nextInt(50 - 10) + 10;
+        roomTelemetryInfo.setCurDayPowerConsumption(roomTelemetryInfo.getCurDayPowerConsumption() + result1);
+
+        int result2 = r.nextInt(60 - 5) + 5;
+        roomTelemetryInfo.setCurDayWaterConsumption(roomTelemetryInfo.getCurDayWaterConsumption() + result2);
     }
 }

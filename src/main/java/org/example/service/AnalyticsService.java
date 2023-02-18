@@ -128,7 +128,7 @@ public class AnalyticsService {
         return result;
     }
 
-    private int buildTotalExpenses(BusinessCenter businessCenter, Room room, Instant from, Instant to) {
+    public int buildTotalExpenses(BusinessCenter businessCenter, Room room, Instant from, Instant to) {
         final Integer powerExpenses = calcPowerExpensive(businessCenter, Collections.singletonList(room.getId()), from, to);
         final Integer requestExpenses = calcRequestExpenses(Collections.singletonList(room.getId()), from, to);
         final Integer checkExpenses = calcCheckExpenses(Collections.singletonList(room.getId()), from, to);

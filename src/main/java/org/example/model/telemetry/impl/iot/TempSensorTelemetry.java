@@ -28,7 +28,7 @@ public class TempSensorTelemetry extends BaseTelemetry {
 
     @Override
     public int hashCode() {
-        return Objects.hash(temp);
+        return Objects.hash(super.hashCode(), temp);
     }
 
     @Override

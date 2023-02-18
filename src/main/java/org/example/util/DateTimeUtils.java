@@ -37,7 +37,9 @@ public enum DateTimeUtils {
                     resultIntervals.add(Interval.of(from, to));
                 });
         }
-        return resultIntervals;
+        return resultIntervals.stream()
+            .filter(i -> i.calcDuration() > 0)
+            .collect(Collectors.toList());
     }
 
     public static List<Interval> splitByMonth(LocalDateTime start, LocalDateTime end) {
