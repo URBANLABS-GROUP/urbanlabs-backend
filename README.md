@@ -14,7 +14,7 @@
 Сборка и тесты:
 
 ```bash
-$ ./gradlew clean build test check javadoc
+$ ./gradlew clean build test javadoc -x check
 ```
 
 ```bash
