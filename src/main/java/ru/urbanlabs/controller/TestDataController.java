@@ -148,18 +148,19 @@ public class TestDataController {
         second.setArea(54.2);
         second.setName("Помещение 2");
         officeRooms.add(second);
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 1"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 2"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 3"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 4"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 5"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 6"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 7"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 8"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 9"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 10"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 11"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 12"));
+
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 1", "{\"coords\":[[545,0],[545,56],[485,56],[485,0]]}"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 2", "{\"coords\":[[485,0],[485,56],[423,56],[423,0]]}"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 3", "{\"coords\":[[423,0],[423,56],[359,56],[359,0]]}"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 4", "{\"coords\":[[359,0],[359,56],[297,56],[297,0]]}"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 5", "{\"coords\":[[297,0],[297,56],[235,56],[235,0]]}"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 6", "{\"coords\":[[235,0],[235,56],[173,56],[173,0]]}"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 7", "{\"coords\":[[235,190],[235,132],[173,132],[173,190]]}"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 8", "{\"coords\":[[297,190],[297,132],[235,132],[235,190]]}"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 9", "{\"coords\":[[359,190],[359,132],[297,132],[297,190]]}"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 10", "{\"coords\":[[422,190],[422,132],[359,132],[359,190]]}"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 11", "{\"coords\":[[484,190],[484,132],[422,132],[422,190]]}"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 12", "{\"coords\":[[546,190],[546,132],[484,132],[484,190]]}"));
 
         rooms.addAll(officeRooms);
 
@@ -539,13 +540,14 @@ public class TestDataController {
         return room;
     }
 
-    private static Room buildRoom(final BusinessCenterStorey businessCenterStorey, final String name) {
+    private static Room buildRoom(final BusinessCenterStorey businessCenterStorey, final String name, final String position) {
         final Room room = new Room();
         room.setName(name);
         room.setBusinessCenterStoreyId(businessCenterStorey.getId());
         room.setRequiredTemp(270);
         room.setAllowablePowerConsumption(1000);
         room.setArea(40.0);
+        room.setPosition(position);
         return room;
     }
 
