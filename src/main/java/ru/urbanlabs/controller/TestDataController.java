@@ -114,41 +114,12 @@ public class TestDataController {
         Lessor lessor = buildLessor("Муратов Иван Игоревич");
         lessor = lessorRepository.save(lessor);
 
-        Lessee lessee = buildLessee("Ваганес Артурович Джан");
+        Lessee lessee = buildLessee("Николай Мыльников Сергеевич");
         lessee = lesseeRepository.save(lessee);
 
-        final BusinessCenter businessCenterFirst = buildBusinessCenter("Тестовые бизнес центр 1", lessor);
-        businessCenterRepository.save(businessCenterFirst);
-
-        final BusinessCenter businessCenterSecond = buildBusinessCenter("Тестовые бизнес центр 2", lessor);
-        businessCenterRepository.save(businessCenterSecond);
-
-        final BusinessCenter businessCenterOffice = buildBusinessCenter("Офис", lessor);
+        final BusinessCenter businessCenterOffice = buildBusinessCenter("Бизнец-центр", lessor);
         businessCenterOffice.setWattPrice(5);
         businessCenterRepository.save(businessCenterOffice);
-
-        final BusinessCenterStorey businessCenterStorey1Floor = buildBusinessCenterStorey(businessCenterFirst, "1 этаж");
-        final BusinessCenterStorey businessCenterStorey2Floor = buildBusinessCenterStorey(businessCenterFirst, "2 этаж");
-        final BusinessCenterStorey businessCenterStorey3Floor = buildBusinessCenterStorey(businessCenterFirst, "3 этаж");
-        final List<BusinessCenterStorey> firstBusinessCenterStoreys =
-            businessCenterStoreyRepository.saveAll(List.of(
-                businessCenterStorey1Floor,
-                businessCenterStorey2Floor,
-                businessCenterStorey3Floor
-            ));
-
-        final BusinessCenterStorey businessCenterSecondStorey0Floor = buildBusinessCenterStorey(businessCenterSecond, "подвал");
-        final BusinessCenterStorey businessCenterSecondStorey1Floor = buildBusinessCenterStorey(businessCenterSecond, "1 этаж");
-        final BusinessCenterStorey businessCenterSecondStorey2Floor = buildBusinessCenterStorey(businessCenterSecond, "2 этаж");
-        final BusinessCenterStorey businessCenterSecondStorey3Floor = buildBusinessCenterStorey(businessCenterSecond, "3 этаж");
-        final BusinessCenterStorey businessCenterSecondStorey4Floor = buildBusinessCenterStorey(businessCenterSecond, "4 этаж");
-        final List<BusinessCenterStorey> secondBusinessCenterStoreys = businessCenterStoreyRepository.saveAll(List.of(
-            businessCenterSecondStorey0Floor,
-            businessCenterSecondStorey1Floor,
-            businessCenterSecondStorey2Floor,
-            businessCenterSecondStorey3Floor,
-            businessCenterSecondStorey4Floor
-        ));
 
         final BusinessCenterStorey businessCenter2Storey1Floor = buildBusinessCenterStorey(businessCenterOffice, "1 этаж");
         businessCenter2Storey1Floor.setMap("{\"svgContainer\":{\"attributes\":{\"viewBox\":\"0 0 190 728\",\"fill\":\"transparent\"},\"bounding\":[[0,0],[728,190]],\"innerHtml\":\"<path stroke=\\\"#000\\\" stroke-width=\\\"2\\\" d=\\\"M2 664h150\\\"/>\\n <path stroke=\\\"#B0B0B0\\\" stroke-width=\\\"2\\\" d=\\\"M68 665v63M98 665v63M128 665v63M113 665v63M83 665v63M66 2v63M96 2v63M126 2v63M111 2v63M81 2v63\\\"/>\\n <path stroke=\\\"#000\\\" stroke-width=\\\"2\\\" d=\\\"M2 64h151M1 0v728M189 49v631M2 727h186M2 1h188M0 364h190\\\"/>\"}}");
@@ -160,29 +131,31 @@ public class TestDataController {
                 businessCenter2Storey2Floor
             ));
 
-
         List<Room> rooms = new ArrayList<>();
-        for (BusinessCenterStorey centerStorey : firstBusinessCenterStoreys) {
-            rooms.add(buildRoom(centerStorey));
-        }
-        for (BusinessCenterStorey centerStorey : secondBusinessCenterStoreys) {
-            rooms.add(buildRoom(centerStorey));
-        }
+
         final List<Room> officeRooms = new ArrayList<>();
         Room first = buildRoom(businessCenter2Storey1Floor);
         first.setPosition("{\"coords\":[[365,0],[365,190],[663,190],[663,0]]}");
         first.setArea(40.5);
+        first.setName("Помещение 1");
         officeRooms.add(first);
         Room second = buildRoom(businessCenter2Storey1Floor);
         second.setPosition("{\"coords\":[[65,0],[65,190],[365,190],[365,0]]}");
         second.setArea(54.2);
+        second.setName("Помещение 2");
         officeRooms.add(second);
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 1"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 2"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 3"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 4"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 5"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 6"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 7"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 8"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 9"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 10"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 11"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 12"));
 
         rooms.addAll(officeRooms);
 
@@ -190,17 +163,14 @@ public class TestDataController {
 
         List<LeaseContract> leaseContracts = List.of(
             buildLeaseContract(rooms.get(0), lessor, lessee),
-            buildLeaseContract(rooms.get(2), lessor, lessee),
+            buildLeaseContract(rooms.get(1), lessor, lessee),
             buildLeaseContract(rooms.get(3), lessor, lessee),
             buildLeaseContract(rooms.get(4), lessor, lessee),
             buildLeaseContract(rooms.get(5), lessor, lessee),
             buildLeaseContract(rooms.get(7), lessor, lessee),
-            buildLeaseContract(rooms.get(rooms.size() - 1), lessor, lessee),
-            buildLeaseContract(rooms.get(rooms.size() - 2), lessor, lessee),
-            buildLeaseContract(rooms.get(rooms.size() - 3), lessor, lessee),
-            buildLeaseContract(rooms.get(rooms.size() - 5), lessor, lessee),
-            buildLeaseContract(rooms.get(rooms.size() - 6), lessor, lessee),
-            buildLeaseContract(rooms.get(rooms.size() - 7), lessor, lessee)
+            buildLeaseContract(rooms.get(8), lessor, lessee),
+            buildLeaseContract(rooms.get(9), lessor, lessee),
+            buildLeaseContract(rooms.get(10), lessor, lessee)
         );
 
         leaseContractRepository.saveAll(leaseContracts);
@@ -215,12 +185,11 @@ public class TestDataController {
             buildLeaseEvent(leaseContracts.get(0), 15000),
             buildLeaseEvent(leaseContracts.get(1), 20000),
             buildLeaseEvent(leaseContracts.get(2), 50000),
-            buildLeaseEvent(leaseContracts.get(6), 45000),
+            buildLeaseEvent(leaseContracts.get(3), 45000),
+            buildLeaseEvent(leaseContracts.get(4), 50000),
+            buildLeaseEvent(leaseContracts.get(6), 50000),
             buildLeaseEvent(leaseContracts.get(7), 50000),
-            buildLeaseEvent(leaseContracts.get(8), 50000),
-            buildLeaseEvent(leaseContracts.get(9), 50000),
-            buildLeaseEvent(leaseContracts.get(10), 50000),
-            buildLeaseEvent(leaseContracts.get(11), 1000)
+            buildLeaseEvent(leaseContracts.get(8), 1000)
         );
 
         leaseEventRepository.saveAll(leaseEvents);
@@ -528,7 +497,7 @@ public class TestDataController {
         leaseContract.setLesseeId(lessee.getId());
         leaseContract.setRoomId(room.getId());
 
-        leaseContract.setRent(room.getId() == 15 ? 5000 : 50000);
+        leaseContract.setRent(room.getId() == 5 ? 5000 : 50000);
         leaseContract.setStartTime(Instant.parse("2023-01-01T00:00:00Z"));
         leaseContract.setEndTime(Instant.parse("2024-01-01T00:00:00Z"));
         return leaseContract;
@@ -544,6 +513,15 @@ public class TestDataController {
         return room;
     }
 
+    private static Room buildRoom(final BusinessCenterStorey businessCenterStorey, final String name) {
+        final Room room = new Room();
+        room.setName(name);
+        room.setBusinessCenterStoreyId(businessCenterStorey.getId());
+        room.setRequiredTemp(270);
+        room.setAllowablePowerConsumption(1000);
+        room.setArea(40.0);
+        return room;
+    }
     private static Lessor buildLessor(String name) {
         final Lessor lessor = new Lessor();
         lessor.setName(name);
