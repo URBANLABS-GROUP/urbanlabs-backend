@@ -33,8 +33,12 @@ import ru.urbanlabs.model.telemetry.impl.iot.*;
 import ru.urbanlabs.repository.*;
 import ru.urbanlabs.repository.equipment.*;
 import ru.urbanlabs.repository.telemetry.*;
+import ru.urbanlabs.util.DateTimeUtils;
+import ru.urbanlabs.util.Interval;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -144,18 +148,18 @@ public class TestDataController {
         second.setArea(54.2);
         second.setName("Помещение 2");
         officeRooms.add(second);
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 1"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 2"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 3"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 4"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 5"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 6"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 7"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 8"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 9"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 10"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 11"));
-        officeRooms.add(buildRoom(businessCenter2Storey2Floor,"Помещение 12"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 1"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 2"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 3"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 4"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 5"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 6"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 7"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 8"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 9"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 10"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 11"));
+        officeRooms.add(buildRoom(businessCenter2Storey2Floor, "Помещение 12"));
 
         rooms.addAll(officeRooms);
 
@@ -181,15 +185,37 @@ public class TestDataController {
             roomRepository.save(room);
         }
 
-        final List<LeaseEvent> leaseEvents = List.of(
-            buildLeaseEvent(leaseContracts.get(0), 15000),
-            buildLeaseEvent(leaseContracts.get(1), 20000),
-            buildLeaseEvent(leaseContracts.get(2), 50000),
-            buildLeaseEvent(leaseContracts.get(3), 45000),
-            buildLeaseEvent(leaseContracts.get(4), 50000),
-            buildLeaseEvent(leaseContracts.get(6), 50000),
-            buildLeaseEvent(leaseContracts.get(7), 50000),
-            buildLeaseEvent(leaseContracts.get(8), 1000)
+        Instant from = Instant.parse("2022-01-01T00:00:00Z");
+        Instant to = Instant.parse("2023-01-01T00:00:00Z");
+
+        final List<Interval> intervals = DateTimeUtils.splitByMonth(
+            LocalDateTime.ofInstant(from, ZoneId.of("UTC")),
+            LocalDateTime.ofInstant(to, ZoneId.of("UTC"))
+        );
+
+        final List<LeaseEvent> leaseEvents = new ArrayList<>();
+        for (Interval interval : intervals) {
+            leaseEvents.add(buildLeaseEvent(leaseContracts.get(0), 50000, interval.getFrom()));
+            leaseEvents.add(buildLeaseEvent(leaseContracts.get(1), 50000, interval.getFrom()));
+            leaseEvents.add(buildLeaseEvent(leaseContracts.get(2), 50000, interval.getFrom()));
+            leaseEvents.add(buildLeaseEvent(leaseContracts.get(3), 50000, interval.getFrom()));
+            leaseEvents.add(buildLeaseEvent(leaseContracts.get(4), 50000, interval.getFrom()));
+            leaseEvents.add(buildLeaseEvent(leaseContracts.get(5), 50000, interval.getFrom()));
+            leaseEvents.add(buildLeaseEvent(leaseContracts.get(6), 50000, interval.getFrom()));
+            leaseEvents.add(buildLeaseEvent(leaseContracts.get(7), 50000, interval.getFrom()));
+            leaseEvents.add(buildLeaseEvent(leaseContracts.get(8), 50000, interval.getFrom()));
+        }
+
+        leaseEvents.addAll(List.of(
+            buildLeaseEvent(leaseContracts.get(0), 15000, Instant.parse("2023-02-01T00:00:00Z")),
+            buildLeaseEvent(leaseContracts.get(1), 20000, Instant.parse("2023-02-01T00:00:00Z")),
+            buildLeaseEvent(leaseContracts.get(2), 50000, Instant.parse("2023-02-01T00:00:00Z")),
+            buildLeaseEvent(leaseContracts.get(3), 45000, Instant.parse("2023-02-01T00:00:00Z")),
+            buildLeaseEvent(leaseContracts.get(4), 50000, Instant.parse("2023-02-01T00:00:00Z")),
+            buildLeaseEvent(leaseContracts.get(5), 50000, Instant.parse("2023-02-01T00:00:00Z")),
+            buildLeaseEvent(leaseContracts.get(6), 50000, Instant.parse("2023-02-01T00:00:00Z")),
+            buildLeaseEvent(leaseContracts.get(7), 50000, Instant.parse("2023-02-01T00:00:00Z")),
+            buildLeaseEvent(leaseContracts.get(8), 1000, Instant.parse("2023-02-01T00:00:00Z")))
         );
 
         leaseEventRepository.saveAll(leaseEvents);
@@ -205,23 +231,23 @@ public class TestDataController {
 
         requests = requestRepository.saveAll(requests);
 
-        final Instant from = Instant.parse("2022-06-01T00:00:00Z");
-        final Instant to = Instant.now();
+        final Instant from1 = Instant.parse("2022-06-01T00:00:00Z");
+        final Instant to1 = Instant.now();
 
         final List<PowerSocket> powerSockets = new ArrayList<>();
-        buildPowerSocketIotData(officeRooms, from, to, powerSockets);
+        buildPowerSocketIotData(officeRooms, from1, to1, powerSockets);
 
         final List<TempSensor> tempSensors = new ArrayList<>();
-        buildTempIotData(officeRooms, from, to, tempSensors);
+        buildTempIotData(officeRooms, from1, to1, tempSensors);
 
         final List<SmokeSensor> smokeSensors = new ArrayList<>();
-        buildSmokeIotData(officeRooms, from, to, smokeSensors);
+        buildSmokeIotData(officeRooms, from1, to1, smokeSensors);
 
         final List<MoveSensor> moveSensors = new ArrayList<>();
-        buildMoveIotData(officeRooms, from, to, moveSensors);
+        buildMoveIotData(officeRooms, from1, to1, moveSensors);
 
         final List<WaterSensor> waterSensors = new ArrayList<>();
-        buildWaterIotData(officeRooms, from, to, waterSensors);
+        buildWaterIotData(officeRooms, from1, to1, waterSensors);
 
         final List<Check> checks = new ArrayList<>();
         for (Room officeRoom : officeRooms) {
@@ -471,10 +497,10 @@ public class TestDataController {
         return powerSocket;
     }
 
-    private static LeaseEvent buildLeaseEvent(final LeaseContract leaseContract, final int money) {
+    private static LeaseEvent buildLeaseEvent(final LeaseContract leaseContract, final int money, final Instant time) {
         final LeaseEvent leaseEvent = new LeaseEvent();
-        leaseEvent.setMoney(money);
-        leaseEvent.setPaymentMonth(Instant.parse("2023-02-01T00:00:00Z"));
+        leaseEvent.setMoney(leaseContract.getRoomId() == 5 ? 5000 : money);
+        leaseEvent.setPaymentMonth(time);
         leaseEvent.setLeaseContractId(leaseContract.getId());
         return leaseEvent;
     }
@@ -498,7 +524,7 @@ public class TestDataController {
         leaseContract.setRoomId(room.getId());
 
         leaseContract.setRent(room.getId() == 5 ? 5000 : 50000);
-        leaseContract.setStartTime(Instant.parse("2023-01-01T00:00:00Z"));
+        leaseContract.setStartTime(Instant.parse("2022-01-01T00:00:00Z"));
         leaseContract.setEndTime(Instant.parse("2024-01-01T00:00:00Z"));
         return leaseContract;
     }
@@ -522,6 +548,7 @@ public class TestDataController {
         room.setArea(40.0);
         return room;
     }
+
     private static Lessor buildLessor(String name) {
         final Lessor lessor = new Lessor();
         lessor.setName(name);

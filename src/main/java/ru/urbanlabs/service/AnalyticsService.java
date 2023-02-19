@@ -25,6 +25,7 @@ import ru.urbanlabs.model.telemetry.impl.iot.TempSensorTelemetry;
 import ru.urbanlabs.util.Interval;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -211,7 +212,7 @@ public class AnalyticsService {
             .collect(Collectors.toList());
 
         final List<LeaseEvent> leaseEvents = daoFactory.getLeaseEventRepository().findAllByLeaseContractIdInAndPaymentMonthGreaterThanEqualAndPaymentMonthLessThanEqual(
-            contactIds, from, to
+            contactIds, from, to.minus(1, ChronoUnit.SECONDS)
         );
 
         return leaseEvents.stream()
