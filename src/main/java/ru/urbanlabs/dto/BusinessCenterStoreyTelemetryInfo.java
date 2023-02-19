@@ -1,8 +1,12 @@
 package ru.urbanlabs.dto;
 
+import ru.urbanlabs.dao.DaoFactory;
+import ru.urbanlabs.model.businesscenter.Room;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.OptionalDouble;
+import java.util.stream.Collectors;
 
 public class BusinessCenterStoreyTelemetryInfo {
 
@@ -17,6 +21,8 @@ public class BusinessCenterStoreyTelemetryInfo {
 
     private Integer rent;
     private Integer expenses;
+
+    private Double area;
 
     public Integer getCurTemp() {
         return curTemp;
@@ -82,10 +88,19 @@ public class BusinessCenterStoreyTelemetryInfo {
         this.expenses = expenses;
     }
 
-    public static BusinessCenterStoreyTelemetryInfo of(List<RoomTelemetryInfo> roomTelemetryInfoList) {
+    public Double getArea() {
+        return area;
+    }
+
+    public void setArea(Double area) {
+        this.area = area;
+    }
+
+    public static BusinessCenterStoreyTelemetryInfo of(final DaoFactory daoFactory,
+                                                       final List<RoomTelemetryInfo> roomInfos) {
         final BusinessCenterStoreyTelemetryInfo businessCenterStoreyTelemetryInfo = new BusinessCenterStoreyTelemetryInfo();
 
-        OptionalDouble averageCurTemp = roomTelemetryInfoList.stream()
+        OptionalDouble averageCurTemp = roomInfos.stream()
             .map(RoomTelemetryInfo::getCurTemp)
             .filter(Objects::nonNull)
             .mapToInt(Integer::intValue)
@@ -94,7 +109,7 @@ public class BusinessCenterStoreyTelemetryInfo {
             businessCenterStoreyTelemetryInfo.setCurTemp((int) averageCurTemp.getAsDouble());
         }
 
-        OptionalDouble averageTemp = roomTelemetryInfoList.stream()
+        OptionalDouble averageTemp = roomInfos.stream()
             .map(RoomTelemetryInfo::getAverageCurTemp)
             .filter(Objects::nonNull)
             .mapToInt(Integer::intValue)
@@ -103,37 +118,46 @@ public class BusinessCenterStoreyTelemetryInfo {
             businessCenterStoreyTelemetryInfo.setAverageCurTemp((int) averageTemp.getAsDouble());
         }
 
-        businessCenterStoreyTelemetryInfo.setCurDayPowerConsumption(roomTelemetryInfoList.stream()
+        businessCenterStoreyTelemetryInfo.setCurDayPowerConsumption(roomInfos.stream()
             .map(RoomTelemetryInfo::getCurDayPowerConsumption)
             .filter(Objects::nonNull)
             .mapToInt(Integer::intValue)
             .sum());
-        businessCenterStoreyTelemetryInfo.setAveragePowerConsumption(roomTelemetryInfoList.stream()
+        businessCenterStoreyTelemetryInfo.setAveragePowerConsumption(roomInfos.stream()
             .map(RoomTelemetryInfo::getAveragePowerConsumption)
             .filter(Objects::nonNull)
             .mapToInt(Integer::intValue)
             .sum());
 
-        businessCenterStoreyTelemetryInfo.setCurDayWaterConsumption(roomTelemetryInfoList.stream()
+        businessCenterStoreyTelemetryInfo.setCurDayWaterConsumption(roomInfos.stream()
             .map(RoomTelemetryInfo::getCurDayWaterConsumption)
             .filter(Objects::nonNull)
             .mapToInt(Integer::intValue)
             .sum());
-        businessCenterStoreyTelemetryInfo.setAverageWaterConsumption(roomTelemetryInfoList.stream()
+        businessCenterStoreyTelemetryInfo.setAverageWaterConsumption(roomInfos.stream()
             .map(RoomTelemetryInfo::getAverageWaterConsumption)
             .filter(Objects::nonNull)
             .mapToInt(Integer::intValue)
             .sum());
 
-        businessCenterStoreyTelemetryInfo.setExpenses(roomTelemetryInfoList.stream()
+        businessCenterStoreyTelemetryInfo.setExpenses(roomInfos.stream()
             .map(RoomTelemetryInfo::getExpenses)
             .filter(Objects::nonNull)
             .mapToInt(Integer::intValue)
             .sum());
-        businessCenterStoreyTelemetryInfo.setRent(roomTelemetryInfoList.stream()
+        businessCenterStoreyTelemetryInfo.setRent(roomInfos.stream()
             .map(RoomTelemetryInfo::getRent)
             .filter(Objects::nonNull)
             .mapToInt(Integer::intValue)
+            .sum());
+
+        List<Room> rooms = daoFactory.getRoomRepository().findAllById(roomInfos.stream()
+            .map(RoomTelemetryInfo::getRoomId)
+            .collect(Collectors.toList()));
+        businessCenterStoreyTelemetryInfo.setArea(rooms.stream()
+            .map(Room::getArea)
+            .filter(Objects::nonNull)
+            .mapToDouble(Double::doubleValue)
             .sum());
 
         return businessCenterStoreyTelemetryInfo;

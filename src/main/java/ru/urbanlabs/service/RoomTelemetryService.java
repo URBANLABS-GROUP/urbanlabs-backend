@@ -38,6 +38,8 @@ public class RoomTelemetryService {
 
         RoomTelemetryInfo roomTelemetryInfo = new RoomTelemetryInfo();
 
+        roomTelemetryInfo.setRoomId(room.getId());
+
         if (room.getLeaseContractId() != null) {
             Optional<LeaseContract> leaseContract = daoFactory.getLeaseContractRepository().findById(room.getLeaseContractId());
             if (leaseContract.isPresent()) {

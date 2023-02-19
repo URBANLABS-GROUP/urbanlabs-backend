@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.urbanlabs.dao.DaoFactory;
 import ru.urbanlabs.dto.BusinessCenterStoreyTelemetryInfo;
 import ru.urbanlabs.dto.RoomTelemetryInfo;
 import ru.urbanlabs.model.businesscenter.BusinessCenterStorey;
@@ -24,15 +25,15 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class BusinessCenterStoreyController {
 
     private final BusinessCenterStoreyRepository businessCenterStoreyRepository;
-    private final RoomRepository roomRepository;
+    private final DaoFactory daoFactory;
     private final RoomTelemetryService roomTelemetryService;
 
     @Autowired
     public BusinessCenterStoreyController(final BusinessCenterStoreyRepository businessCenterStoreyRepository,
-                                          final RoomRepository roomRepository,
+                                          final DaoFactory daoFactory,
                                           final RoomTelemetryService roomTelemetryService) {
         this.businessCenterStoreyRepository = businessCenterStoreyRepository;
-        this.roomRepository = roomRepository;
+        this.daoFactory = daoFactory;
         this.roomTelemetryService = roomTelemetryService;
     }
 
@@ -52,7 +53,7 @@ public class BusinessCenterStoreyController {
             roomTelemetryInfos.add(telemetryInfo);
         }
 
-        return ResponseEntity.ok(BusinessCenterStoreyTelemetryInfo.of(roomTelemetryInfos));
+        return ResponseEntity.ok(BusinessCenterStoreyTelemetryInfo.of(daoFactory, roomTelemetryInfos));
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)

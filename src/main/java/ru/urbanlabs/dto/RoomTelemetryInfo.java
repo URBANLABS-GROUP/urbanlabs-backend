@@ -4,6 +4,8 @@ import java.util.Objects;
 
 public class RoomTelemetryInfo {
 
+    private Integer roomId;
+
     private Integer curTemp;
     private Integer averageCurTemp;
 
@@ -17,6 +19,14 @@ public class RoomTelemetryInfo {
     //    private boolean isLightTurnOn;
     private Integer rent;
     private Integer expenses;
+
+    public Integer getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Integer roomId) {
+        this.roomId = roomId;
+    }
 
     public Integer getCurTemp() {
         return curTemp;
@@ -99,18 +109,19 @@ public class RoomTelemetryInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RoomTelemetryInfo that = (RoomTelemetryInfo) o;
-        return Objects.equals(curTemp, that.curTemp) && Objects.equals(averageCurTemp, that.averageCurTemp) && Objects.equals(curDayPowerConsumption, that.curDayPowerConsumption) && Objects.equals(averagePowerConsumption, that.averagePowerConsumption) && Objects.equals(curDayWaterConsumption, that.curDayWaterConsumption) && Objects.equals(averageWaterConsumption, that.averageWaterConsumption) && Objects.equals(isMove, that.isMove) && Objects.equals(rent, that.rent) && Objects.equals(expenses, that.expenses);
+        return Objects.equals(roomId, that.roomId) && Objects.equals(curTemp, that.curTemp) && Objects.equals(averageCurTemp, that.averageCurTemp) && Objects.equals(curDayPowerConsumption, that.curDayPowerConsumption) && Objects.equals(averagePowerConsumption, that.averagePowerConsumption) && Objects.equals(curDayWaterConsumption, that.curDayWaterConsumption) && Objects.equals(averageWaterConsumption, that.averageWaterConsumption) && Objects.equals(isMove, that.isMove) && Objects.equals(rent, that.rent) && Objects.equals(expenses, that.expenses);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(curTemp, averageCurTemp, curDayPowerConsumption, averagePowerConsumption, curDayWaterConsumption, averageWaterConsumption, isMove, rent, expenses);
+        return Objects.hash(roomId, curTemp, averageCurTemp, curDayPowerConsumption, averagePowerConsumption, curDayWaterConsumption, averageWaterConsumption, isMove, rent, expenses);
     }
 
     @Override
     public String toString() {
         return "RoomTelemetryInfo{" +
-            "curTemp=" + curTemp +
+            "roomId=" + roomId +
+            ", curTemp=" + curTemp +
             ", averageCurTemp=" + averageCurTemp +
             ", curDayPowerConsumption=" + curDayPowerConsumption +
             ", averagePowerConsumption=" + averagePowerConsumption +
